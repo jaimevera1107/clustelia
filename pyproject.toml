@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clustelia"
+version = "0.0.0"
+description = "Cluster-label diagnostics and an evolving foundation for clustering analysis."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Jaime Vera-Jaramillo" }]
+keywords = ["clustering", "cluster-analysis", "unsupervised-learning", "machine-learning"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/jaimevera1107/clustelia"
+Repository = "https://github.com/jaimevera1107/clustelia"
+Issues = "https://github.com/jaimevera1107/clustelia/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
