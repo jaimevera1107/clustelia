@@ -1,8 +1,30 @@
+# Python environments and generated artifacts
+.venv/
+venv/
+.env
 __pycache__/
 *.py[cod]
-.venv/
-.pytest_cache/
 *.egg-info/
 build/
 dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
+htmlcov/
+
+# Local verification and benchmark outputs
+verification_report.md
+parallel*.json
+tiempo.py
+
+# Serialized snapshots are not part of installed packages.
+# Keep exactly the frozen 0.3.0a1 reference under version control.
+*.pkl
+!docs/equivalence/reference_0.3.0a1.pkl
+
+# Editor and operating system artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
