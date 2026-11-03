@@ -1,0 +1,1745 @@
+{
+  "split": "reserved2",
+  "repeats": 6,
+  "summaries": [
+    {
+      "policy": "P0",
+      "null_runs": 18,
+      "false_recommendation_rate": 0.9444444444444444,
+      "structured_runs": 24,
+      "recommendation_rate": 1.0,
+      "mean_ari_when_recommended": 0.7342656295983917,
+      "exact_k_rate_when_recommended": 0.4166666666666667,
+      "utility": -0.21017881484605272,
+      "mean_fits": 81.5,
+      "per_scenario": {
+        "anisotropic_k3": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd0.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd0.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd1.0": {
+          "runs": 2,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k4_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k4_sd1.5": {
+          "runs": 2,
+          "recommended": 1.0
+        },
+        "blobs_k6_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k6_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "mixed_k3": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "null_gaussian": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "null_mixed": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "null_uniform": {
+          "runs": 6,
+          "recommended": 0.8333333333333334
+        }
+      }
+    },
+    {
+      "policy": "P1",
+      "null_runs": 18,
+      "false_recommendation_rate": 0.05555555555555555,
+      "structured_runs": 24,
+      "recommendation_rate": 1.0,
+      "mean_ari_when_recommended": 0.7342656295983917,
+      "exact_k_rate_when_recommended": 0.4166666666666667,
+      "utility": 0.6787100740428361,
+      "mean_fits": 194.16666666666666,
+      "per_scenario": {
+        "anisotropic_k3": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd0.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd0.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd1.0": {
+          "runs": 2,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k4_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k4_sd1.5": {
+          "runs": 2,
+          "recommended": 1.0
+        },
+        "blobs_k6_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k6_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "mixed_k3": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "null_gaussian": {
+          "runs": 6,
+          "recommended": 0.0
+        },
+        "null_mixed": {
+          "runs": 6,
+          "recommended": 0.16666666666666666
+        },
+        "null_uniform": {
+          "runs": 6,
+          "recommended": 0.0
+        }
+      }
+    },
+    {
+      "policy": "P2",
+      "null_runs": 18,
+      "false_recommendation_rate": 0.0,
+      "structured_runs": 24,
+      "recommendation_rate": 1.0,
+      "mean_ari_when_recommended": 0.8618645101464087,
+      "exact_k_rate_when_recommended": 0.8333333333333334,
+      "utility": 0.8618645101464087,
+      "mean_fits": 153.42857142857142,
+      "per_scenario": {
+        "anisotropic_k3": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd0.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k2_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd0.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd1.0": {
+          "runs": 2,
+          "recommended": 1.0
+        },
+        "blobs_k3_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k4_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k4_sd1.5": {
+          "runs": 2,
+          "recommended": 1.0
+        },
+        "blobs_k6_sd1.0": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "blobs_k6_sd1.5": {
+          "runs": 1,
+          "recommended": 1.0
+        },
+        "mixed_k3": {
+          "runs": 6,
+          "recommended": 1.0
+        },
+        "null_gaussian": {
+          "runs": 6,
+          "recommended": 0.0
+        },
+        "null_mixed": {
+          "runs": 6,
+          "recommended": 0.0
+        },
+        "null_uniform": {
+          "runs": 6,
+          "recommended": 0.0
+        }
+      }
+    }
+  ],
+  "outcomes": {
+    "P0": [
+      {
+        "scenario": "blobs_k4_sd1.5_d5",
+        "seed": 200000,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 4,
+        "k_true": 4,
+        "fits": 80,
+        "seconds": 0.8797824470000251
+      },
+      {
+        "scenario": "blobs_k3_sd1.0_d2",
+        "seed": 200001,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.7731621369999857
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200002,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.8660031850000109
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200003,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.725807898348543,
+        "k_found": 8,
+        "k_true": 3,
+        "fits": 79,
+        "seconds": 4.648383505999959
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200004,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 8,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.2645999709999955
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200005,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 2,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.070758082999987
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200006,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 8,
+        "k_true": null,
+        "fits": 79,
+        "seconds": 5.020497074000048
+      },
+      {
+        "scenario": "blobs_k3_sd1.0_d5",
+        "seed": 200007,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.848373711000022
+      },
+      {
+        "scenario": "blobs_k2_sd1.5_d2",
+        "seed": 200008,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 83,
+        "seconds": 0.763112445000047
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200009,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.8144129840000005
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200010,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.6429133925667232,
+        "k_found": 8,
+        "k_true": 3,
+        "fits": 79,
+        "seconds": 4.882545411999956
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200011,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 4,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.0179490040000019
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200012,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 2,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 0.9128923229999941
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200013,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 8,
+        "k_true": null,
+        "fits": 79,
+        "seconds": 4.640609858999994
+      },
+      {
+        "scenario": "blobs_k6_sd1.0_d2",
+        "seed": 200014,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.2725060827250608,
+        "k_found": 2,
+        "k_true": 6,
+        "fits": 83,
+        "seconds": 0.8467675809999946
+      },
+      {
+        "scenario": "blobs_k3_sd1.5_d2",
+        "seed": 200015,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 80,
+        "seconds": 0.7083156389999772
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200016,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.7671875810000301
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200017,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8285376655485097,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 79,
+        "seconds": 4.984282016000009
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200018,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 5,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.2729812449999827
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200019,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 2,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.075979794000034
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200020,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 8,
+        "k_true": null,
+        "fits": 79,
+        "seconds": 4.516223556
+      },
+      {
+        "scenario": "blobs_k3_sd0.5_d2",
+        "seed": 200021,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.7400437269999998
+      },
+      {
+        "scenario": "blobs_k2_sd0.5_d2",
+        "seed": 200022,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 83,
+        "seconds": 0.8661199169999918
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200023,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.6373578809999572
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200024,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8059740594745795,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 79,
+        "seconds": 4.968713816000047
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200025,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 3,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.1286245750000035
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200026,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 2,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 0.9094569200000251
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200027,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 7,
+        "k_true": null,
+        "fits": 79,
+        "seconds": 5.695579389999978
+      },
+      {
+        "scenario": "blobs_k4_sd1.5_d2",
+        "seed": 200028,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.3291348353182302,
+        "k_found": 2,
+        "k_true": 4,
+        "fits": 80,
+        "seconds": 0.7062891150000041
+      },
+      {
+        "scenario": "blobs_k2_sd1.0_d5",
+        "seed": 200029,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 83,
+        "seconds": 0.8021147229999883
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200030,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.7610035789999756
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200031,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.6970795532506935,
+        "k_found": 7,
+        "k_true": 3,
+        "fits": 79,
+        "seconds": 5.367341874000033
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200032,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 3,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 0.9202070309999613
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200033,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 2,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.046642329000008
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200034,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 8,
+        "k_true": null,
+        "fits": 79,
+        "seconds": 5.231898295999997
+      },
+      {
+        "scenario": "blobs_k4_sd1.0_d2",
+        "seed": 200035,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.7122232916265641,
+        "k_found": 3,
+        "k_true": 4,
+        "fits": 80,
+        "seconds": 0.7160084950000396
+      },
+      {
+        "scenario": "blobs_k6_sd1.5_d2",
+        "seed": 200036,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.46275791471639366,
+        "k_found": 3,
+        "k_true": 6,
+        "fits": 80,
+        "seconds": 0.7751339509999866
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200037,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 83,
+        "seconds": 0.7203569060000063
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200038,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.726735380814879,
+        "k_found": 6,
+        "k_true": 3,
+        "fits": 79,
+        "seconds": 5.926380332000008
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200039,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.1505803410000226
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200040,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 2,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 0.8614116319999994
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200041,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 7,
+        "k_true": null,
+        "fits": 79,
+        "seconds": 5.730606324000007
+      }
+    ],
+    "P1": [
+      {
+        "scenario": "blobs_k4_sd1.5_d5",
+        "seed": 200000,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 4,
+        "k_true": 4,
+        "fits": 269,
+        "seconds": 2.841423192000036
+      },
+      {
+        "scenario": "blobs_k3_sd1.0_d2",
+        "seed": 200001,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.9055584719999956
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200002,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.8721535169999584
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200003,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.725807898348543,
+        "k_found": 8,
+        "k_true": 3,
+        "fits": 205,
+        "seconds": 11.96902957399999
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200004,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.9225761669999883
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200005,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.610540656000012
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200006,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 93,
+        "seconds": 6.133295148000002
+      },
+      {
+        "scenario": "blobs_k3_sd1.0_d5",
+        "seed": 200007,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.800746296
+      },
+      {
+        "scenario": "blobs_k2_sd1.5_d2",
+        "seed": 200008,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 272,
+        "seconds": 2.6561660710000297
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200009,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 3.104862620000006
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200010,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.6429133925667232,
+        "k_found": 8,
+        "k_true": 3,
+        "fits": 205,
+        "seconds": 11.53649722900002
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200011,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 209,
+        "seconds": 2.3805639519999886
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200012,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.1314710139999988
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200013,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 93,
+        "seconds": 5.384689841000011
+      },
+      {
+        "scenario": "blobs_k6_sd1.0_d2",
+        "seed": 200014,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.2725060827250608,
+        "k_found": 2,
+        "k_true": 6,
+        "fits": 272,
+        "seconds": 2.734719996000024
+      },
+      {
+        "scenario": "blobs_k3_sd1.5_d2",
+        "seed": 200015,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 269,
+        "seconds": 2.804870061000031
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200016,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.6193836240000223
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200017,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8285376655485097,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 205,
+        "seconds": 12.429562309000005
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200018,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.5676668759999757
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200019,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.6959363330000201
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200020,
+        "has_structure": false,
+        "status": "recommended",
+        "recommended": true,
+        "ari": null,
+        "k_found": 8,
+        "k_true": null,
+        "fits": 205,
+        "seconds": 10.63759348100001
+      },
+      {
+        "scenario": "blobs_k3_sd0.5_d2",
+        "seed": 200021,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.74162539200006
+      },
+      {
+        "scenario": "blobs_k2_sd0.5_d2",
+        "seed": 200022,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 272,
+        "seconds": 3.0035320920000004
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200023,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.7220742580000206
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200024,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8059740594745795,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 205,
+        "seconds": 11.529009041999984
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200025,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.3387292419999994
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200026,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.1409475860000384
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200027,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 135,
+        "seconds": 8.363640734
+      },
+      {
+        "scenario": "blobs_k4_sd1.5_d2",
+        "seed": 200028,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.3291348353182302,
+        "k_found": 2,
+        "k_true": 4,
+        "fits": 269,
+        "seconds": 2.7028261820000807
+      },
+      {
+        "scenario": "blobs_k2_sd1.0_d5",
+        "seed": 200029,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 272,
+        "seconds": 2.9200783889999684
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200030,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5697841726618705,
+        "k_found": 2,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.669620440000017
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200031,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.6970795532506935,
+        "k_found": 7,
+        "k_true": 3,
+        "fits": 205,
+        "seconds": 11.176386853000054
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200032,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.093597442000032
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200033,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.4073243369999773
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200034,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 93,
+        "seconds": 6.380981533000067
+      },
+      {
+        "scenario": "blobs_k4_sd1.0_d2",
+        "seed": 200035,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.7122232916265641,
+        "k_found": 3,
+        "k_true": 4,
+        "fits": 269,
+        "seconds": 2.889630878999924
+      },
+      {
+        "scenario": "blobs_k6_sd1.5_d2",
+        "seed": 200036,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.46275791471639366,
+        "k_found": 3,
+        "k_true": 6,
+        "fits": 269,
+        "seconds": 2.8971779839999954
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200037,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 272,
+        "seconds": 2.9421850589999394
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200038,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.726735380814879,
+        "k_found": 6,
+        "k_true": 3,
+        "fits": 205,
+        "seconds": 12.595974659000035
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200039,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 83,
+        "seconds": 1.298863833999917
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200040,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 104,
+        "seconds": 1.293422552999914
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200041,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 93,
+        "seconds": 6.095584422000002
+      }
+    ],
+    "P2": [
+      {
+        "scenario": "blobs_k4_sd1.5_d5",
+        "seed": 200000,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 4,
+        "k_true": 4,
+        "fits": 246,
+        "seconds": 2.6200380459999906
+      },
+      {
+        "scenario": "blobs_k3_sd1.0_d2",
+        "seed": 200001,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.7037160039999435
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200002,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.9702555619013858,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.6841348140000036
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200003,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.9223713897607171,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 166,
+        "seconds": 8.099536650999994
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200004,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.5005960309999864
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200005,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.5015989810000292
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200006,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 28,
+        "seconds": 1.6190819180000062
+      },
+      {
+        "scenario": "blobs_k3_sd1.0_d5",
+        "seed": 200007,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.659611186999996
+      },
+      {
+        "scenario": "blobs_k2_sd1.5_d2",
+        "seed": 200008,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 246,
+        "seconds": 2.6267569490000824
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200009,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8434264857448582,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.323865688000069
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200010,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8853197090031015,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 166,
+        "seconds": 7.469219146
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200011,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 147,
+        "seconds": 1.5386516429999801
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200012,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.41724975300007827
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200013,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 28,
+        "seconds": 1.3314576640000269
+      },
+      {
+        "scenario": "blobs_k6_sd1.0_d2",
+        "seed": 200014,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.47405452946350046,
+        "k_found": 3,
+        "k_true": 6,
+        "fits": 246,
+        "seconds": 2.5607351570000674
+      },
+      {
+        "scenario": "blobs_k3_sd1.5_d2",
+        "seed": 200015,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8607158990436404,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.5106629719999773
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200016,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.402638023999998
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200017,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8285376655485097,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 166,
+        "seconds": 8.031198302999996
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200018,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.4858891239999821
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200019,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.4868125450000207
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200020,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 166,
+        "seconds": 6.9063846489999605
+      },
+      {
+        "scenario": "blobs_k3_sd0.5_d2",
+        "seed": 200021,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.3651895940000713
+      },
+      {
+        "scenario": "blobs_k2_sd0.5_d2",
+        "seed": 200022,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 2,
+        "k_true": 2,
+        "fits": 246,
+        "seconds": 2.467317251000054
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200023,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.9226828282828283,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.4911357299999963
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200024,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8059740594745795,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 166,
+        "seconds": 8.29621394500009
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200025,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.4673319899999342
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200026,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.43864941199990426
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200027,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 70,
+        "seconds": 3.5094675569999936
+      },
+      {
+        "scenario": "blobs_k4_sd1.5_d2",
+        "seed": 200028,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.6696793097021336,
+        "k_found": 3,
+        "k_true": 4,
+        "fits": 246,
+        "seconds": 2.407178712000018
+      },
+      {
+        "scenario": "blobs_k2_sd1.0_d5",
+        "seed": 200029,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.5036087403327842,
+        "k_found": 4,
+        "k_true": 2,
+        "fits": 246,
+        "seconds": 2.670875443
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200030,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.467293576999964
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200031,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8491434741597828,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 166,
+        "seconds": 8.265210010000033
+      },
+      {
+        "scenario": "null_uniform_d2",
+        "seed": 200032,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.5731390039999269
+      },
+      {
+        "scenario": "null_gaussian_d5",
+        "seed": 200033,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.5020103800000015
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200034,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 28,
+        "seconds": 1.3600728239999853
+      },
+      {
+        "scenario": "blobs_k4_sd1.0_d2",
+        "seed": 200035,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8720472645256582,
+        "k_found": 4,
+        "k_true": 4,
+        "fits": 246,
+        "seconds": 2.5441179739999598
+      },
+      {
+        "scenario": "blobs_k6_sd1.5_d2",
+        "seed": 200036,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.43924786566239366,
+        "k_found": 3,
+        "k_true": 6,
+        "fits": 246,
+        "seconds": 2.528711348999991
+      },
+      {
+        "scenario": "anisotropic_k3",
+        "seed": 200037,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 1.0,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 246,
+        "seconds": 2.579609244999915
+      },
+      {
+        "scenario": "mixed_k3",
+        "seed": 200038,
+        "has_structure": true,
+        "status": "recommended",
+        "recommended": true,
+        "ari": 0.8376834609079357,
+        "k_found": 3,
+        "k_true": 3,
+        "fits": 166,
+        "seconds": 7.782582163999905
+      },
+      {
+        "scenario": "null_uniform_d4",
+        "seed": 200039,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 105,
+        "seconds": 1.171417912000038
+      },
+      {
+        "scenario": "null_gaussian_d2",
+        "seed": 200040,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 42,
+        "seconds": 0.4477546050000001
+      },
+      {
+        "scenario": "null_mixed",
+        "seed": 200041,
+        "has_structure": false,
+        "status": "no_admissible_solution",
+        "recommended": false,
+        "ari": null,
+        "k_found": null,
+        "k_true": null,
+        "fits": 28,
+        "seconds": 1.2784177089999957
+      }
+    ]
+  }
+}
