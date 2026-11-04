@@ -64,7 +64,7 @@ def _preset(effort: Effort) -> tuple[SelectionPolicy, SearchBudget]:
             SelectionPolicy(version="P2-quick", null_replicates=2,
                             subsamples=3, seed_repeats=1,
                             shortlist_size=3),
-            SearchBudget(max_fits=100, max_candidates=15,
+            SearchBudget(max_fits=100, max_candidates=21,
                          timeout_s=120, metric_sample_size=500),
         )
     if effort == "balanced":

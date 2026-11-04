@@ -34,11 +34,14 @@ not calibrated confidence levels.** Their parameters:
 
 | Effort | Null replicates | Subsamples | Extra seed repeats | Shortlist | Max fits | Candidates | Timeout (soft) | Metric sample |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| quick | 2 | 3 | 1 | 3 | 100 | 15 | 120 s | 500 |
+| quick | 2 | 3 | 1 | 3 | 100 | 21 | 120 s | 500 |
 | balanced | 9 | 10 | 3 | 5 | 320 | 40 | 600 s | 1 000 |
 | thorough | 19 | 15 | 5 | 7 | 800 | 75 | 1 800 s | 1 500 |
 
-`quick` uses less null evidence than `balanced` and can recommend structures
+`quick` covers the entire default compact grid (21 numerical
+candidates) before attempting validation. Custom candidate grids can still be
+truncated, and the status will then be `incomplete`. `quick` uses less null
+evidence than `balanced` and can recommend structures
 that fail a more extensive validation. A bigger budget does not make the data
 clusterable. Explicit `selection=` and `budget=` override the preset; other
 `AutoCluster` arguments (`geometry`, `objective`, `families`, `k_range`, etc.)

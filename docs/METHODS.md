@@ -73,7 +73,10 @@ over its own k values passed 3 of 8 uniform squares; mirroring the k grid
 of the winning family but not the choice between families passed 5 of 15
 uniform datasets; mirroring the whole grid passed 3 of 45 structureless
 datasets (uniform 2/15, Gaussian 0/15, mixed 1/15), consistent with the
-1/(B + 1) = 10% bound. One test is run per search;
+1/(B + 1) conditional Monte Carlo resolution. Because the fitted
+reference distribution is data-dependent, exchangeability and a general
+10% false-recommendation error bound are not guaranteed. One test is
+run per search;
 retrying other candidates after a failure would multiply the chances to
 pass.
 
@@ -169,7 +172,8 @@ each and no duplicate reference points. Gower is not evaluated with DBCV
 because no valid euclidean dimension is established for it. A missing metric
 is never turned into zero, numeric and budget failures are recorded with
 their cause, and a missing score does not prove absence of density
-structure. No default tolerance is calibrated for this metric.
+structure. No default tolerance is calibrated for this metric. No null
+cluster-existence screen is performed for this objective.
 
 ## Mixtures
 

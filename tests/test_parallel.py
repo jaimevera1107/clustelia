@@ -174,8 +174,9 @@ class BatchSemantics(unittest.TestCase):
         self.assertEqual(counts[0], counts[1])
         self.assertEqual(counts[0][0], 3)
 
-    def test_first_error_in_task_order_later_fits_uncharged(self):
-        # 500 clusters on 60 rows fails; the third fit must not be charged.
+    def test_parallel_batch_charges_every_submitted_fit(self):
+        # 500 clusters on 60 rows fails. A parallel batch still runs
+        # the third fit, whereas a sequential run stops at the error.
         specs = [CandidateSpec("kmeans", 2), CandidateSpec("kmeans", 500),
                  CandidateSpec("kmeans", 3)]
         for workers in (1, 2):
@@ -184,8 +185,11 @@ class BatchSemantics(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     executor.fit_apply(specs, self.data, "p", "structure",
                                        _length)
-                self.assertEqual(executor.fits_used, 2)
-                self.assertEqual(executor.breakdown["structure"], 2)
+                expected = 2 if workers == 1 else 3
+                self.assertEqual(executor.fits_used, expected)
+                self.assertEqual(executor.breakdown["structure"], expected)
+                self.assertEqual(sum(executor._per_candidate.values()),
+                                 expected)
 
     def test_exhausted_budget_stops_the_sequential_path(self):
         specs = [CandidateSpec("kmeans", k) for k in (2, 3, 4)]

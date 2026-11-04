@@ -3,6 +3,17 @@
 All notable changes are documented here. The project follows
 [Semantic Versioning](https://semver.org/); 0.x releases may change the API.
 
+## Unreleased — audit corrections (review before releasing)
+
+- Align quick budget with the complete default numeric candidate grid.
+- Mark null-backend failures and unavailable Gap statistics as incomplete.
+- Rank every objective using its oriented primary score within experiment.
+- Use bias-corrected squared Cramér V for categorical differentiation.
+- Account for all attempted parallel fits when a batch fails.
+- Expose validation scope and clarify conditional null-reference evidence.
+- Make static typing a required CI gate and install Hypothesis in test CI.
+- Add targeted regression tests and document retained statistical limits.
+
 ## 0.3.0a1 — 3 November 2026
 
 - Repository-preparation cleanup: preserve the source algorithms; keep one

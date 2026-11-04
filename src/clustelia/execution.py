@@ -237,8 +237,9 @@ class FitExecutor:
             path only).
         ValueError
             If ``stage`` is unknown, or the first failing fit's error (a
-            backend error is re-raised in task order; fits after it are
-            not charged, as in the sequential path).
+            backend error is re-raised in task order). A parallel
+            batch charges all submitted fits even when one task fails;
+            a sequential batch stops on the first failure.
         """
         if stage not in self.breakdown:
             raise ValueError(f"Unknown fit stage: {stage!r}.")
@@ -288,13 +289,14 @@ class FitExecutor:
         self.stage_seconds[stage] += time.perf_counter() - started
         self.workers_used = max(self.workers_used, workers)
         self.last_notices = []
-        results = []
-        for identifier, (value, error) in zip(
-            identifiers, outcomes, strict=True
-        ):
+        # Parallel tasks already ran. Charge every submitted fit even
+        # if an earlier task in the batch failed.
+        for identifier in identifiers:
             self.fits_used += 1
             self.breakdown[stage] += 1
             self._per_candidate[identifier] += 1
+        results = []
+        for value, error in outcomes:
             if error is not None:
                 raise error
             results.append(value)

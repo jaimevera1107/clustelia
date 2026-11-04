@@ -606,8 +606,13 @@ class _SearchRun:
         self.structure_seconds = time.perf_counter() - started
         top["structure_test"] = outcome.as_record()
         self.structure_record = outcome.as_record()
-        if outcome.exhausted:
-            self.interrupted = True
+        if outcome.exhausted or outcome.failed:
+            if outcome.exhausted:
+                self.interrupted = True
+            self.incomplete_reasons.append(
+                outcome.reason or "null reference test inconclusive"
+            )
+            self._refresh_fit_counts()
             return [], None, [], []
         if not outcome.passed:
             for row in scored:
@@ -616,6 +621,16 @@ class _SearchRun:
             return [], None, [], []
         table = gap_table(self.rows, outcome.null_dispersions)
         self.gap_record = [entry.as_record() for entry in table]
+        observed_ks = {
+            int(row["parameters"]["k"]) for row in scored
+        }
+        available_ks = {entry.k for entry in table}
+        if not table or available_ks != observed_ks:
+            self.incomplete_reasons.append(
+                "gap statistic unavailable for one or more explored k values"
+            )
+            self._refresh_fit_counts()
+            return [], None, [], []
         chosen_k = select_k(table)
         self.selected_k = chosen_k
         if len(table) > 1 and chosen_k == table[-1].k:
@@ -703,8 +718,12 @@ class _SearchRun:
             )
         if outcome.passed:
             return winner, admissible
-        if outcome.exhausted:
-            self.interrupted = True
+        if outcome.exhausted or outcome.failed:
+            if outcome.exhausted:
+                self.interrupted = True
+            self.incomplete_reasons.append(
+                outcome.reason or "null reference test inconclusive"
+            )
             return None, admissible
         for identifier in admissible:
             rows[identifier]["rejection_reasons"].append(
@@ -829,6 +848,14 @@ class _SearchRun:
                 and plan.policy.uses_gap else "silhouette"
             ),
             "structure_test": self.structure_record,
+            "validation_scope": (
+                "reference_screen_and_stability"
+                if self.objective == "compact"
+                and plan.policy.null_replicates > 0
+                else "stability_only"
+                if self.objective == "compact"
+                else "objective_score_and_stability_no_structure_test"
+            ),
             "gap_table": self.gap_record,
             "selected_k": self.selected_k,
             "selection_warnings": list(self.selection_warnings),
