@@ -298,8 +298,9 @@ class SelectionPolicy:
 
     The stability thresholds are engineering rules checked on the
     synthetic benchmark in ``tools/benchmark.py``; they are not statistical
-    guarantees. The null-reference test (``null_replicates``) has an exact
-    error bound only when the data follow one of its reference families.
+    guarantees. The null-reference screen (``null_replicates``) is
+    calibrated only under an exchangeable reference design, which
+    data-dependent fitted reference families do not guarantee in general.
 
     Parameters
     ----------
@@ -333,8 +334,9 @@ class SelectionPolicy:
     null_replicates : int
         Null-reference replicates per family for the compact objective. A
         recommendation must have a reference silhouette above every
-        replicate (false-recommendation rate at most ``1 / (B + 1)`` when
-        the data follow a reference family). ``0`` disables the test and
+        replicate. ``1 / (B + 1)`` is conditional Monte Carlo rank
+        resolution under exchangeability, not a general error bound.
+        ``0`` disables the test and
         restores the P0 behaviour.
     null_scope : {"grid", "family"}
         Candidates refitted on each null dataset. ``"grid"`` (default)

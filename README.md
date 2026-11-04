@@ -119,7 +119,7 @@ Clustelia can return these selection states:
 | `recommended` | A candidate passed the applicable selection and confirmation criteria. |
 | `ambiguous` | The available evidence does not support a unique recommendation. |
 | `no_admissible_solution` | No candidate passed the applicable admissibility criteria. |
-| `incomplete` | The search or its confirmation could not finish under the configured constraints. |
+| `incomplete` | The search/confirmation was truncated, a required statistic was unavailable, or a reference-validation fit failed. |
 
 Always check for a recommendation before accessing recommended-model convenience properties. With `AutoCluster`, `model.labels_`, `model.best_estimator_`, `predict()`, and `fit_predict()` raise `NoRecommendationError` when none exists. You can still inspect individual fitted candidates through `result.select(candidate_id)`; manual selection **does not validate** them.
 
@@ -131,7 +131,7 @@ For the **compact** objective, the default P2 policy makes three distinct decisi
 2. **How many clusters?** The gap statistic uses the null-reference fits to choose `k`, rather than relying only on the silhouette, which can favor a coarser partition.
 3. **Which fitted candidate is most reliable?** Eligible candidates are confirmed through subsampling and alternative random seeds. The final choice considers stability, coverage, performance, and computation cost.
 
-The reference comparison is a statistical screening rule, **not proof of the existence or absence of natural clusters**. With nine null replicates, the nominal Monte Carlo resolution is `1 / (9 + 1) = 10%` under the reference assumption. Increasing the evidence budget does not make every dataset clusterable.
+The reference comparison is a statistical screening rule, **not proof of the existence or absence of natural clusters**. With nine null replicates, the nominal Monte Carlo resolution is `1 / (9 + 1) = 10%` under exchangeability. The fitted data-dependent references do **not** guarantee exact calibration or a universal 10% false-recommendation rate. Increasing the evidence budget does not make every dataset clusterable.
 
 <details>
 <summary><strong>Technical details of P2 selection</strong></summary>

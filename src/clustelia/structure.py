@@ -24,11 +24,13 @@ Decision rule
 With ``B`` replicates the search passes only if its statistic is strictly
 greater than the null maximum of every replicate. When the data follow
 the reference, observed and null statistics are exchangeable (with the
-default ``null_scope="grid"``), so the false-recommendation probability
-is at most ``1 / (B + 1)``: 0.1 for the default ``B = 9``. Only one test is
-run per search; when it fails the search abstains instead of trying other
-candidates. Replicates stop at the first null maximum that reaches the
-observed value. Failing the test is not proof that no structure exists.
+default ``null_scope="grid"``), a rank test has a conditional Monte
+Carlo resolution of ``1 / (B + 1)`` (0.1 for ``B = 9``). The fitted PCA
+box and column-permutation references are data-dependent, so exchangeability
+and a general false-recommendation bound are NOT guaranteed. Only one
+screen is run per search. Failed screens abstain without retries; failed
+backend fits instead yield an incomplete experiment. Replicates stop at
+the first null maximum reaching the observed value.
 """
 
 from __future__ import annotations
@@ -265,6 +267,7 @@ class StructureOutcome:
     grid: list[str]
     passed: bool = False
     exhausted: bool = False
+    failed: bool = False
     null_maxima: list[float] = field(default_factory=list)
     null_silhouettes: dict[str, list[float]] = field(default_factory=dict)
     null_dispersions: dict[str, list[float | None]] = field(
@@ -280,6 +283,7 @@ class StructureOutcome:
             "grid": list(self.grid),
             "passed": self.passed,
             "exhausted": self.exhausted,
+            "failed": self.failed,
             "null_maxima": list(self.null_maxima),
             "replicates": len(self.null_maxima),
             "reason": self.reason,
@@ -364,6 +368,7 @@ class StructureTester:
             except BACKEND_ERRORS as exc:
                 if self.error_policy == "raise":
                     raise
+                outcome.failed = True
                 outcome.reason = (
                     f"null reference fit failed: {type(exc).__name__}: "
                     f"{exc}"

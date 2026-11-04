@@ -299,7 +299,8 @@ class Solution:
         """Post-hoc descriptive differentiation of the fitted clusters.
 
         Numeric features: between-group explained variance (eta squared).
-        Other features: squared Cramér V (chi2 / (n * min(r-1,c-1))).
+        Other features: bias-corrected squared Cramér V. This reduces
+        spurious differentiation from high-cardinality categories.
         No significance tests or generalisation claims are made because
         the clustering algorithm uses these very same variables.
         Noise is excluded from comparison.
@@ -335,13 +336,19 @@ class Solution:
                         chi2 = chi2_contingency(
                             contingency, correction=False
                         )[0]
-                        score = float(
-                            chi2 / (len(observed) * min(r - 1, c - 1))
+                        n = len(observed)
+                        phi2 = chi2 / n
+                        phi2_corr = max(
+                            0.0, phi2 - (r - 1) * (c - 1) / (n - 1)
                         )
-                    method = "cramers_v_squared"
+                        r_corr = r - (r - 1) ** 2 / (n - 1)
+                        c_corr = c - (c - 1) ** 2 / (n - 1)
+                        denom = min(r_corr - 1, c_corr - 1)
+                        score = phi2_corr / denom if denom > 0 else 0.0
+                    method = "cramers_v_squared_bias_corrected"
             else:
                 method = ("eta_squared" if col in self.schema_.numeric
-                          else "cramers_v_squared")
+                          else "cramers_v_squared_bias_corrected")
             records.append({
                 "feature": str(col), "measure": method,
                 "differentiation": float(np.clip(score, 0, 1)),
@@ -613,6 +620,7 @@ class ExperimentResult:
         return {
             "status": self.selection_status,
             "objective": self.metadata.get("objective"),
+            "validation_scope": self.metadata.get("validation_scope"),
             "effort": self.metadata.get("effort", "expert"),
             "policy": self.metadata.get("policy", {}).get("version"),
             "null_replicates_requested": self.metadata.get("policy", {}).get(
@@ -671,13 +679,11 @@ class ExperimentResult:
             self.recommendation.candidate_id if self.recommendation else None
         )
         view.insert(0, "recommended", view["candidate_id"].eq(chosen))
-        # Other objectives can have opposite score directions, e.g. BIC
-        # is minimised. Never suggest a universal score ranking.
-        ordering = ["recommended", "confirmed"]
-        descending = [False, False]
-        if self.metadata.get("objective") == "compact":
-            ordering.append("silhouette")
-            descending.append(False)
+        # Primary scores are oriented with larger being better, but
+        # are comparable only within the same objective/representation.
+        ordering = ["recommended", "confirmed", "primary_score",
+                    "candidate_id"]
+        descending = [False, False, False, True]
         view = view.sort_values(
             ordering, ascending=descending, na_position="last",
             kind="stable",
@@ -694,6 +700,7 @@ class ExperimentResult:
             "# Clustelia experiment",
             f"- Selection: **{details['status']}**",
             f"- Objective: {details['objective']}",
+            f"- Validation scope: {details['validation_scope']}",
             f"- Fit attempts: {details['fits_used']}",
             f"- Candidates evaluated: {details['candidates_evaluated']}",
             f"- Recommendation: {algorithm} "
