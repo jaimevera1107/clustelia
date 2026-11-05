@@ -22,6 +22,12 @@ All notable changes are documented here. The project follows
 - Internal: null generators are registered per family in
   `structure._GENERATORS`; adding a family no longer edits
   `generate_null`.
+- `tools/null_reference_study.py`: paired 30-seed comparison of the
+  reference families (recommendation rate with Wilson intervals, exact
+  k, conditional ARI, boundary abstentions). Results in
+  `docs/benchmark/null_reference_study_30.json` and `docs/VALIDATION.md`.
+- Behavioural equivalence against `main` with default settings: 20/20
+  identical (`tools/equivalence.py`, exact mode).
 
 ## Unreleased — audit corrections (review before releasing)
 

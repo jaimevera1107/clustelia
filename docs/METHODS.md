@@ -89,9 +89,16 @@ k-means, k 2–5, B = 19, standard scaling): on a skewed unimodal cloud
 without groups the box reference recommended a partition in 22/30 runs
 and the copula in 0/30; on three separated blobs 30/30 versus 27/30; on
 three unbalanced blobs 28/30 versus 3/30; on three overlapping blobs
-27/30 versus 20/30. The copula fixes the skewed-marginal failure at a
-large cost in sensitivity on unbalanced mixtures, so `pca_uniform`
-remains the default and the copula is opt-in. Both references are
+27/30 versus 20/30. That study's copula variant fixed the skewed-marginal
+failure at a large cost in sensitivity on unbalanced mixtures. The
+implementation shipped here (normal scores mapped back by rank, so the
+marginals are preserved exactly) was re-run with
+`tools/null_reference_study.py` on 30 seeds and five scenarios: 0–1/30
+recommendations on the skewed cloud and 29–30/30 on every structured
+scenario, within one run of the box (`docs/VALIDATION.md`). It is a
+development study on scenarios chosen knowing the failure mode, so
+`pca_uniform` remains the default and the copula is opt-in until a
+reserved split and real data are added. Both references are
 data-dependent; neither carries an exchangeability guarantee.
 
 Limits: the bound holds when the data follow the reference. Data with one

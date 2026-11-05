@@ -7,6 +7,74 @@
 > below refer to the original directory before this cleanup.
 > See [equivalence/README.md](equivalence/README.md).
 
+## Unreleased — null family and boundary policy (5 November 2026 UTC)
+
+Branch `feat/null-family-and-boundary-policy`, Linux, Python 3.11,
+NumPy/SciPy/scikit-learn as pinned by `.[all,dev]`.
+
+### Engineering checks
+
+- `pytest`: 196 passed, 39 subtests passed (182 on `main`; 14 new in
+  `tests/test_null_family.py`).
+- `ruff check src tests tools`: clean. `mypy`: clean, 28 source files.
+- Behavioural equivalence (`tools/equivalence.py`, exact mode): a capture
+  of this branch against a capture of `main` taken in the same
+  environment is **20/20 IDENTICAL**. With the defaults unchanged
+  (`null_family="auto"`, `boundary_k_policy="warn"`) no status,
+  recommendation, candidate table or label moves.
+- Against the frozen `reference_0.3.0a1.pkl` the same capture differs in
+  10/20 runs at `--rtol 1e-9`; `main` differs in exactly the same 10
+  runs, so the differences are environmental (density/fuzzy backends and
+  last-bit numerics of this machine), not introduced here. The reference
+  is not regenerated, per the traceability decision of the November 2026
+  study.
+
+### Null-reference study (`tools/null_reference_study.py`, 30 seeds)
+
+Protocol: n = 160, k-means only, k in 2..5, B = 19 replicates,
+`boundary_k_policy="abstain"`, max 360 fits, the same 30 seeds in every
+condition. Five scenarios × 2 families × 2 scalings = 600 searches.
+Raw outcomes and summaries: `docs/benchmark/null_reference_study_30.json`.
+Development data: the scenarios were chosen knowing the failure mode under
+study; this is evidence for a decision, not an out-of-sample validation.
+
+| Scenario | Scaling | `pca_uniform` rec. | `gaussian_copula` rec. | ARI given rec. (box / copula) |
+|:--|:--|--:|--:|:--|
+| Skewed unimodal (no groups) | standard | 17/30 | 0/30 | – |
+| Skewed unimodal (no groups) | none | 20/30 | 1/30 | – |
+| Gaussian unimodal (no groups) | standard | 0/30 | 2/30 | – |
+| Gaussian unimodal (no groups) | none | 0/30 | 2/30 | – |
+| 3 separated blobs | standard | 29/30 | 30/30 | 0.980 / 0.981 |
+| 3 separated blobs | none | 30/30 | 30/30 | 0.997 / 0.997 |
+| 3 unbalanced blobs (100/40/20) | standard | 29/30 | 30/30 | 0.872 / 0.908 |
+| 3 unbalanced blobs (100/40/20) | none | 30/30 | 30/30 | 0.989 / 0.970 |
+| 3 overlapping blobs | standard | 30/30 | 29/30 | 0.924 / 0.934 |
+| 3 overlapping blobs | none | 30/30 | 29/30 | 0.947 / 0.912 |
+
+Reading:
+
+- The copula removes the skewed-marginal false recommendations of the box
+  reference (Wilson 95% upper bound 11% at 0/30) while keeping the
+  sensitivity of every structured scenario within one run of the box.
+  Paired ARI differences on seeds where both recommend are within
+  ±0.05.
+- On the correlated Gaussian cloud the copula recommended 2/30 (6.7%,
+  interval 2–21%), the box 0/30. Both are compatible with the nominal
+  1/(B + 1) = 5% resolution; neither reference is exchangeable with the
+  data, so this is not a calibrated error rate.
+- This result differs from the November 2026 study, where the copula
+  variant then under test detected only 3/30 unbalanced mixtures. That
+  variant lived on a local branch with its own generator and dataset
+  design; the two are not the same implementation and the numbers are
+  not comparable. The present generator maps normal scores back to the
+  observed values by rank, so every marginal is preserved exactly.
+- Boundary abstentions (`boundary_k_policy="abstain"`) occurred in 5 of
+  600 searches, all with the box reference at `standard` scaling.
+
+Decision: `pca_uniform` stays the default and `gaussian_copula` stays
+opt-in. Promotion requires a reserved split not used to design the
+scenarios, more dimensions and families, and real labelled data.
+
 ## 0.3.0.dev2 — local full-suite run (2 November 2026 UTC)
 
 After the new contract tests and legacy compatibility tests were updated,
