@@ -12,12 +12,25 @@ structureless data (measured: about one uniform square in three passed).
 
 Reference families
 ------------------
-- Euclidean geometry: ``pca_uniform``, uniform in the box spanned by the
-  training data along its principal axes (reference (b) of the gap
-  statistic, Tibshirani, Walther and Hastie, 2001).
-- Gower geometry: ``permutation``, each feature column permuted
-  independently, which keeps every marginal distribution and removes the
-  association between variables that clusters imply.
+- ``pca_uniform`` (default for Euclidean geometry): uniform in the box
+  spanned by the training data along its principal axes (reference (b)
+  of the gap statistic, Tibshirani, Walther and Hastie, 2001). It is
+  sensitive to real groups but reads skewed unimodal marginals as
+  structure: in development studies a lognormal single mode without
+  groups was recommended in roughly 7 of 10 runs.
+- ``gaussian_copula`` (experimental, opt in): a Gaussian copula fitted
+  on the normal scores of the data, mapped back through the empirical
+  marginals. Every marginal distribution and the rank correlation are
+  preserved exactly in distribution, so skewness alone is not read as
+  structure; the price is a marked loss of sensitivity on unbalanced
+  mixtures (3 of 30 detections in the same studies). Numeric features
+  only.
+- ``permutation`` (default for Gower geometry): each feature column
+  permuted independently, which keeps every marginal distribution and
+  removes the association between variables that clusters imply.
+
+The family is chosen by :attr:`SelectionPolicy.null_family`; ``"auto"``
+applies the geometry default above.
 
 Decision rule
 -------------
@@ -37,13 +50,14 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from functools import partial
 from typing import Any
 
 import numpy as np
 import pandas as pd
+from scipy.special import ndtri
 
 from ._seeding import candidate_id
 from .config import (
@@ -78,15 +92,38 @@ NULL_FAMILIES: dict[str, str] = {
     "euclidean": "pca_uniform",
     "gower": "permutation",
 }
-"""Reference family used for each geometry kind."""
+"""Default reference family of each geometry kind (``null_family="auto"``).
+"""
 
 _WORST_SILHOUETTE: float = -1.0
 """Value given to a null partition without an evaluable silhouette."""
 
 
-def null_family(geometry_kind: str) -> str:
-    """Return the reference family of a geometry kind."""
-    return NULL_FAMILIES[geometry_kind]
+def null_family(geometry_kind: str, requested: str = "auto") -> str:
+    """Resolve the reference family for a geometry kind.
+
+    Parameters
+    ----------
+    geometry_kind : {"euclidean", "gower"}
+        Kind of the reference geometry.
+    requested : str
+        :attr:`SelectionPolicy.null_family`; ``"auto"`` returns the
+        geometry default from :data:`NULL_FAMILIES`.
+
+    Raises
+    ------
+    ValueError
+        If a numeric-only family is requested for Gower geometry, which
+        may carry non-numeric features.
+    """
+    if requested == "auto":
+        return NULL_FAMILIES[geometry_kind]
+    if geometry_kind == "gower" and requested != "permutation":
+        raise ValueError(
+            f"null_family={requested!r} needs numeric features; Gower "
+            "geometry supports only 'permutation' (or 'auto')."
+        )
+    return requested
 
 
 def family_key(spec: CandidateSpec) -> str:
@@ -145,6 +182,128 @@ def structure_reserve(
     return policy.null_replicates * largest
 
 
+def _permutation_null(
+    frame: pd.DataFrame,
+    schema: Schema,
+    varying: Sequence[str],
+    rng: np.random.Generator,
+    blocks: tuple[tuple, ...],
+) -> pd.DataFrame:
+    """Permute every varying feature column independently (or by block)."""
+    null = frame.copy()
+    seen: set[Any] = set()
+    for block in blocks:
+        if any(col not in schema.features for col in block):
+            raise ValueError("Null permutation blocks must name features")
+        if any(col in seen for col in block):
+            raise ValueError("Null permutation blocks cannot overlap")
+        seen.update(block)
+        cols = [col for col in block if col in varying]
+        if cols:
+            permutation = rng.permutation(len(frame))
+            null[cols] = frame[cols].iloc[permutation].to_numpy()
+    for column in varying:
+        if column not in seen:
+            null[column] = frame[column].to_numpy()[
+                rng.permutation(len(frame))
+            ]
+    return null
+
+
+def _numeric_values(
+    family: str, frame: pd.DataFrame, schema: Schema, varying: Sequence[str]
+) -> np.ndarray:
+    """Float matrix of the varying features, or raise for non-numeric."""
+    if any(c not in schema.numeric for c in varying):
+        raise ValueError(f"The {family} reference needs numeric features.")
+    return frame[list(varying)].to_numpy(dtype=float)
+
+
+def _pca_uniform_null(
+    frame: pd.DataFrame,
+    schema: Schema,
+    varying: Sequence[str],
+    rng: np.random.Generator,
+    blocks: tuple[tuple, ...],
+) -> pd.DataFrame:
+    """Uniform box aligned with the principal axes of the data."""
+    null = frame.copy()
+    values = _numeric_values("pca_uniform", frame, schema, varying)
+    centre = values.mean(axis=0)
+    _, _, axes = np.linalg.svd(values - centre, full_matrices=False)
+    scores = (values - centre) @ axes.T
+    box = rng.uniform(scores.min(axis=0), scores.max(axis=0),
+                      size=scores.shape)
+    drawn = box @ axes + centre
+    for position, column in enumerate(varying):
+        null[column] = drawn[:, position]
+    return null
+
+
+def _gaussian_copula_null(
+    frame: pd.DataFrame,
+    schema: Schema,
+    varying: Sequence[str],
+    rng: np.random.Generator,
+    blocks: tuple[tuple, ...],
+) -> pd.DataFrame:
+    """Gaussian copula on the normal scores, mapped back by rank.
+
+    Each column is converted to normal scores through its mid-ranks, a
+    multivariate normal with the correlation of those scores is drawn,
+    and every drawn column is mapped back to the observed values of the
+    same column by rank. The null therefore holds exactly the observed
+    values of each feature (a permutation per column, as the permutation
+    family does) while reproducing the linear dependence between
+    features instead of removing it.
+    """
+    null = frame.copy()
+    values = _numeric_values("gaussian_copula", frame, schema, varying)
+    n_rows, n_cols = values.shape
+    # Mid-ranks keep ties symmetric; the (r - 0.5) / n offset avoids the
+    # infinite quantiles at 0 and 1.
+    ranks = pd.DataFrame(values).rank(method="average").to_numpy()
+    scores = _normal_quantile((ranks - 0.5) / n_rows)
+    correlation = np.corrcoef(scores, rowvar=False).reshape(n_cols, n_cols)
+    correlation = np.nan_to_num(correlation, nan=0.0)
+    np.fill_diagonal(correlation, 1.0)
+    # A small ridge keeps the factorisation valid for nearly collinear
+    # scores; it perturbs the correlation at the fourth decimal at most.
+    eigenvalues, eigenvectors = np.linalg.eigh(correlation)
+    eigenvalues = np.clip(eigenvalues, _COPULA_RIDGE, None)
+    root = eigenvectors * np.sqrt(eigenvalues)
+    drawn = rng.standard_normal(size=(n_rows, n_cols)) @ root.T
+    for position, column in enumerate(varying):
+        sorted_values = np.sort(values[:, position])
+        order = np.argsort(drawn[:, position], kind="stable")
+        back = np.empty(n_rows, dtype=float)
+        back[order] = sorted_values
+        null[column] = back
+    return null
+
+
+def _normal_quantile(probabilities: np.ndarray) -> np.ndarray:
+    """Standard normal quantile function (vectorised)."""
+    return np.asarray(ndtri(probabilities), dtype=float)
+
+
+_COPULA_RIDGE: float = 1e-6
+"""Smallest eigenvalue kept in the copula correlation factorisation."""
+
+_NullGenerator = Callable[
+    [pd.DataFrame, Schema, Sequence[str], np.random.Generator,
+     tuple[tuple, ...]],
+    pd.DataFrame,
+]
+
+_GENERATORS: dict[str, _NullGenerator] = {
+    "permutation": _permutation_null,
+    "pca_uniform": _pca_uniform_null,
+    "gaussian_copula": _gaussian_copula_null,
+}
+"""Reference generator of every supported family."""
+
+
 def generate_null(
     family: str,
     frame: pd.DataFrame,
@@ -161,8 +320,8 @@ def generate_null(
 
     Parameters
     ----------
-    family : {"pca_uniform", "permutation"}
-        Reference family.
+    family : {"pca_uniform", "gaussian_copula", "permutation"}
+        Reference family (see the module docstring).
     frame : pandas.DataFrame
         Validated training table.
     schema : Schema
@@ -171,7 +330,7 @@ def generate_null(
         Source of randomness (seeded by the caller).
     blocks : tuple of tuple
         Disjoint groups shuffled with the SAME row permutation; preserves
-        dependencies internal to each block.
+        dependencies internal to each block. Used by ``permutation`` only.
 
     Returns
     -------
@@ -184,41 +343,14 @@ def generate_null(
         If ``family`` is unknown, or a numeric family is used with
         non-numeric features.
     """
-    null = frame.copy()
+    generator = _GENERATORS.get(family)
+    if generator is None:
+        raise ValueError(
+            f"Unknown null reference family: {family!r}; expected one of "
+            f"{tuple(_GENERATORS)}."
+        )
     varying = [c for c in schema.features if frame[c].nunique() > 1]
-    if family == "permutation":
-        seen: set[Any] = set()
-        for block in blocks:
-            if any(col not in schema.features for col in block):
-                raise ValueError("Null permutation blocks must name features")
-            if any(col in seen for col in block):
-                raise ValueError("Null permutation blocks cannot overlap")
-            seen.update(block)
-            cols = [col for col in block if col in varying]
-            if cols:
-                permutation = rng.permutation(len(frame))
-                null[cols] = frame[cols].iloc[permutation].to_numpy()
-        for column in varying:
-            if column not in seen:
-                null[column] = frame[column].to_numpy()[
-                    rng.permutation(len(frame))
-                ]
-        return null
-    if family != "pca_uniform":
-        raise ValueError(f"Unknown null reference family: {family!r}.")
-    if any(c not in schema.numeric for c in varying):
-        raise ValueError(f"The {family} reference needs numeric features.")
-    values = frame[varying].to_numpy(dtype=float)
-    centre = values.mean(axis=0)
-    # Uniform box aligned with the principal axes of the data.
-    _, _, axes = np.linalg.svd(values - centre, full_matrices=False)
-    scores = (values - centre) @ axes.T
-    box = rng.uniform(scores.min(axis=0), scores.max(axis=0),
-                      size=scores.shape)
-    drawn = box @ axes + centre
-    for position, column in enumerate(varying):
-        null[column] = drawn[:, position]
-    return null
+    return generator(frame, schema, varying, rng, blocks)
 
 
 class _BudgetExhaustedError(Exception):
@@ -332,7 +464,7 @@ class StructureTester:
         self.policy = policy
         self.max_pairwise_mb = max_pairwise_mb
         self.error_policy = error_policy
-        self.family = null_family(geometry.kind)
+        self.family = null_family(geometry.kind, policy.null_family)
 
     def test(
         self, observed: float, grid: Sequence[CandidateSpec]

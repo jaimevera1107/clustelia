@@ -26,8 +26,10 @@ __all__ = [
     "OBJECTIVES",
     "CandidateSpec",
     "candidate_parameters",
+    "BoundaryKPolicy",
     "CostTiebreak",
     "KSelection",
+    "NullFamily",
     "NullScope",
     "GeometryKind",
     "MissingPolicy",
@@ -47,6 +49,8 @@ CovarianceType = Literal["full", "tied", "diag", "spherical"]
 CostTiebreak = Literal["fit_count", "fit_seconds"]
 NullScope = Literal["grid", "family"]
 KSelection = Literal["auto", "gap", "silhouette"]
+NullFamily = Literal["auto", "pca_uniform", "gaussian_copula", "permutation"]
+BoundaryKPolicy = Literal["warn", "abstain"]
 
 OBJECTIVES: tuple[str, ...] = get_args(Objective)
 ALGORITHMS: tuple[str, ...] = (
@@ -353,6 +357,24 @@ class SelectionPolicy:
         tie-breaks over every ``k``). ``"auto"`` uses ``"gap"`` when the
         null test runs on the whole grid with at least two replicates, and
         ``"silhouette"`` otherwise.
+    null_family : {"auto", "pca_uniform", "gaussian_copula", "permutation"}
+        Structureless reference family refitted by the null test and the
+        gap statistic. ``"auto"`` (default) uses ``pca_uniform`` for
+        Euclidean geometry and ``permutation`` for Gower geometry.
+        ``"gaussian_copula"`` is EXPERIMENTAL: it preserves every marginal
+        and the rank correlation, so a skewed single mode is no longer
+        read as structure, but development studies showed a large loss of
+        sensitivity on unbalanced mixtures (see ``docs/VALIDATION.md``).
+        Numeric families cannot be combined with Gower geometry.
+    boundary_k_policy : {"warn", "abstain"}
+        What to do when the gap statistic selects the largest explored
+        ``k`` (the curve may still be rising). ``"warn"`` (default)
+        records a selection warning and proceeds. ``"abstain"`` keeps the
+        gap table and ``selected_k`` as diagnostics but spends no
+        confirmation fits and ends the search as ``incomplete``, so an
+        unresolved upper bound is never presented as a validated
+        recommendation. Only applies when ``k`` is chosen by the gap
+        statistic.
     cost_tiebreak : {"fit_count", "fit_seconds"}
         Cost used to break ties after stability and coverage. The default,
         ``"fit_count"``, is deterministic and expressed in the same unit as
@@ -377,6 +399,8 @@ class SelectionPolicy:
     null_replicates: int = 9
     null_scope: NullScope = "grid"
     k_selection: KSelection = "auto"
+    null_family: NullFamily = "auto"
+    boundary_k_policy: BoundaryKPolicy = "warn"
     cost_tiebreak: CostTiebreak = "fit_count"
 
     @classmethod
@@ -426,6 +450,13 @@ class SelectionPolicy:
                 "k_selection='gap' needs null_scope='grid' and "
                 "null_replicates >= 2."
             )
+        if self.null_family not in get_args(NullFamily):
+            raise ValueError(
+                "null_family must be auto, pca_uniform, gaussian_copula or "
+                "permutation."
+            )
+        if self.boundary_k_policy not in get_args(BoundaryKPolicy):
+            raise ValueError("boundary_k_policy must be warn or abstain.")
         if self.cost_tiebreak not in get_args(CostTiebreak):
             raise ValueError("cost_tiebreak must be fit_count or fit_seconds.")
         if not isinstance(self.version, str) or not self.version:

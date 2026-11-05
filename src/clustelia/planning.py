@@ -26,6 +26,7 @@ from .config import (
 from .exceptions import CapabilityError
 from .optional import optional_version
 from .schema import validate_table
+from .structure import null_family
 
 __all__ = [
     "DEFAULT_COMPACT_FAMILIES",
@@ -162,6 +163,8 @@ class CandidatePlanner:
         )
         geometry = self._resolve_geometry(table.schema)
         policy = self.selection or SelectionPolicy()
+        # Fail before any fit is spent on a family the geometry cannot use.
+        null_family(geometry.kind, policy.null_family)
         budget = self.budget or SearchBudget()
         specs = self._deduplicated(self._specifications(geometry))
         included, exclusions = self._apply_capabilities(

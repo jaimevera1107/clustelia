@@ -408,6 +408,7 @@ class _SearchRun:
         self.structure_record: dict[str, Any] | None = None
         self.gap_record: list[dict[str, Any]] | None = None
         self.selected_k: int | None = None
+        self.selected_k_at_boundary: bool = False
         self.selection_warnings: list[str] = []
         self.structure_seconds = 0.0
 
@@ -633,7 +634,10 @@ class _SearchRun:
             return [], None, [], []
         chosen_k = select_k(table)
         self.selected_k = chosen_k
-        if len(table) > 1 and chosen_k == table[-1].k:
+        self.selected_k_at_boundary = (
+            len(table) > 1 and chosen_k == table[-1].k
+        )
+        if self.selected_k_at_boundary:
             message = (
                 f"gap statistic selected k={chosen_k}, the largest explored "
                 "value; the true number of clusters may be larger: widen "
@@ -641,6 +645,21 @@ class _SearchRun:
             )
             self.selection_warnings.append(message)
             logger.warning(message)
+            if self.plan.policy.boundary_k_policy == "abstain":
+                # Governance decision, not a change of the statistic: the
+                # curve and the diagnostic k are kept, but an unresolved
+                # upper bound is never promoted to a validated result.
+                self.incomplete_reasons.append(
+                    f"gap statistic reached the largest explored k="
+                    f"{chosen_k} and boundary_k_policy='abstain' withheld "
+                    "confirmation; widen k_range to resolve"
+                )
+                for row in scored:
+                    row["rejection_reasons"].append(
+                        "confirmation withheld at the k_range boundary"
+                    )
+                self._refresh_fit_counts()
+                return [], None, [], []
         for row in scored:
             if row["parameters"]["k"] != chosen_k:
                 row["rejection_reasons"].append(
@@ -858,6 +877,12 @@ class _SearchRun:
             ),
             "gap_table": self.gap_record,
             "selected_k": self.selected_k,
+            "selected_k_at_boundary": self.selected_k_at_boundary,
+            "boundary_k_policy": plan.policy.boundary_k_policy,
+            "null_family": (
+                self.structure_record["family"]
+                if self.structure_record else None
+            ),
             "selection_warnings": list(self.selection_warnings),
             "environment": dependency_versions(),
             "limitations": list(_LIMITATIONS),

@@ -3,6 +3,32 @@
 All notable changes are documented here. The project follows
 [Semantic Versioning](https://semver.org/); 0.x releases may change the API.
 
+## Unreleased — null family and boundary policy (follow-ups of the
+## November 2026 validation study)
+
+- `SelectionPolicy(null_family=...)`: choose the structureless reference
+  explicitly. `"auto"` (default) keeps the geometry default
+  (`pca_uniform` for Euclidean, `permutation` for Gower).
+  `"gaussian_copula"` is a new EXPERIMENTAL family that preserves every
+  marginal and the rank correlation; numeric features only, rejected at
+  plan time for Gower geometry. See `docs/METHODS.md`.
+- `SelectionPolicy(boundary_k_policy="abstain")`: when the gap statistic
+  selects the largest explored `k`, withhold confirmation and end the
+  search as `incomplete` instead of recommending an unresolved upper
+  bound. Default `"warn"` is unchanged.
+- Result metadata and `summary()` now carry `null_family`, `selected_k`,
+  `selected_k_at_boundary` and `boundary_k_policy` so abstention causes
+  and the family used are visible without reading `structure_test`.
+- Internal: null generators are registered per family in
+  `structure._GENERATORS`; adding a family no longer edits
+  `generate_null`.
+- `tools/null_reference_study.py`: paired 30-seed comparison of the
+  reference families (recommendation rate with Wilson intervals, exact
+  k, conditional ARI, boundary abstentions). Results in
+  `docs/benchmark/null_reference_study_30.json` and `docs/VALIDATION.md`.
+- Behavioural equivalence against `main` with default settings: 20/20
+  identical (`tools/equivalence.py`, exact mode).
+
 ## Unreleased — audit corrections (review before releasing)
 
 - Align quick budget with the complete default numeric candidate grid.

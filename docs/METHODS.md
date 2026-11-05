@@ -80,6 +80,27 @@ run per search;
 retrying other candidates after a failure would multiply the chances to
 pass.
 
+Alternative family (experimental, `SelectionPolicy(null_family=
+"gaussian_copula")`): a Gaussian copula fitted on the normal scores of the
+data and mapped back through the empirical marginals. Every marginal and
+the rank correlation are reproduced, so skewness alone is not read as
+structure. Studied in November 2026 on 30 seeds per scenario (n = 160,
+k-means, k 2–5, B = 19, standard scaling): on a skewed unimodal cloud
+without groups the box reference recommended a partition in 22/30 runs
+and the copula in 0/30; on three separated blobs 30/30 versus 27/30; on
+three unbalanced blobs 28/30 versus 3/30; on three overlapping blobs
+27/30 versus 20/30. That study's copula variant fixed the skewed-marginal
+failure at a large cost in sensitivity on unbalanced mixtures. The
+implementation shipped here (normal scores mapped back by rank, so the
+marginals are preserved exactly) was re-run with
+`tools/null_reference_study.py` on 30 seeds and five scenarios: 0–1/30
+recommendations on the skewed cloud and 29–30/30 on every structured
+scenario, within one run of the box (`docs/VALIDATION.md`). It is a
+development study on scenarios chosen knowing the failure mode, so
+`pca_uniform` remains the default and the copula is opt-in until a
+reserved split and real data are added. Both references are
+data-dependent; neither carries an exchangeability guarantee.
+
 Limits: the bound holds when the data follow the reference. Data with one
 non-uniform, non-Gaussian cloud (strong skew, heavy tails) can beat the box
 reference; the permutation reference treats any association between
@@ -133,7 +154,19 @@ kept.
 
 High dimension: the earlier "no elbow on digits" came from the grid
 (k ≤ 8 with 10 classes); with k ≤ 10 the rule selects 10. The boundary
-warning in `metadata["selection_warnings"]` is the intended signal.
+warning in `metadata["selection_warnings"]` is the intended signal, and
+`metadata["selected_k_at_boundary"]` exposes it as a flag.
+
+Boundary policy: when the gap curve is still rising at the largest
+explored k the one-SE rule has not found a stopping point, and the
+selected k is an unresolved upper bound. `SelectionPolicy(
+boundary_k_policy="abstain")` keeps the gap table and `selected_k` as
+diagnostics but spends no confirmation fit and ends the search as
+`incomplete` (reason recorded in `incomplete_reasons`). This is a
+governance choice, not a change to the statistic: in the November 2026
+study (unbalanced blobs, no scaling) the default policy recommended
+k = 5 at the boundary with ARI 0.39, and 17/30 runs reached the boundary.
+The default stays `"warn"` so existing results are unchanged.
 
 Known failure (Gower with many nominal columns): with the column-
 permutation reference the gap keeps increasing with k and the null
