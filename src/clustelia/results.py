@@ -646,6 +646,11 @@ class ExperimentResult:
             "coverage": (float(record["coverage"])
                          if record is not None and pd.notna(record["coverage"])
                          else None),
+            "null_family": self.metadata.get("null_family"),
+            "selected_k": self.metadata.get("selected_k"),
+            "selected_k_at_boundary": self.metadata.get(
+                "selected_k_at_boundary"
+            ),
             "selection_warnings": list(
                 self.metadata.get("selection_warnings", [])
             ),
