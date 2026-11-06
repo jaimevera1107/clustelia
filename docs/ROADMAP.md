@@ -1,6 +1,6 @@
 # Implemented scope and next work
 
-State of **0.1.0** (first public release; internal snapshots 0.2.0a1–0.3.0a1 preceded it).
+State of **0.2.0** (public numbering restarted at 0.1.0; internal snapshots 0.2.0a1–0.3.0a1 preceded it).
 
 | Milestone | Implemented | Pending |
 |---|---|---|

@@ -1,5 +1,11 @@
 # Convenience API and interpretable outputs
 
+> Budget note: `effort` fixes `max_fits`. If you pass a `selection` that
+> needs more fits (for instance `null_replicates=19` with `balanced`),
+> `cluster()` warns before fitting and the result is `incomplete` with the
+> exact shortfall; use `effort="thorough"` or pass `budget=`.
+> `AutoCluster(...).plan(X)["fit_requirements"]` shows the numbers.
+
 The **expert API** (`AutoCluster`, explicit `Schema`, `GeometrySpec`,
 `SelectionPolicy` and `SearchBudget`) is still supported with unchanged defaults.
 This release adds an independent convenience entry point that **does not**

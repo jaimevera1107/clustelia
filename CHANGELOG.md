@@ -3,6 +3,25 @@
 All notable changes are documented here. The project follows
 [Semantic Versioning](https://semver.org/); 0.x releases may change the API.
 
+## 0.2.0 — 6 November 2026
+
+### Budget feasibility announced before fitting
+
+- `AutoCluster.plan(X)["fit_requirements"]` reports the fits the protocol
+  needs (`exploration`, reserved `structure` fits, `confirmation`,
+  `minimum` to reach any verdict, `maximum`) against `max_fits`, with a
+  `sufficient` flag.
+- `fit()` and `cluster()` emit a `UserWarning` before spending any fit
+  when `max_fits` cannot cover exploration plus the reserved null grid,
+  for example `null_replicates=19` with the `balanced` preset (420 needed,
+  320 available).
+- The `incomplete` reason for a budget shortfall now states the numbers
+  and the fix ("max_fits=320 is below the 420 fits ...; raise
+  SearchBudget(max_fits) to at least 485 ... or lower null_replicates")
+  instead of the generic truncation message, which is kept for time and
+  candidate-count truncation.
+- No change to selection: results with a sufficient budget are identical.
+
 ## 0.1.0 — first public release on PyPI
 
 First version published on PyPI (the earlier `0.0.0` upload was a name

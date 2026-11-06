@@ -94,6 +94,46 @@ def _finite(value: Any) -> bool:
     return value is not None and bool(np.isfinite(value))
 
 
+def fit_requirements(
+    plan: SearchPlan, objective: str, holdout: bool
+) -> dict[str, Any]:
+    """Fits the protocol needs against the budget, before anything is fitted.
+
+    ``minimum`` is what the search must spend to reach a verdict at all:
+    one exploration fit per candidate (two with a held-out split) plus the
+    null-reference grid reserved for the structure test. ``maximum`` adds
+    the confirmation fits of the largest possible shortlist. When
+    ``max_fits`` is below ``minimum`` the exploration is cut after the
+    first candidate and the result can only be ``incomplete``.
+    """
+    per_candidate = 2 if holdout else 1
+    exploration = per_candidate * len(plan.candidates)
+    structure = structure_reserve(plan.candidates, plan.policy, objective)
+    confirmation = confirmation_reserve(plan.candidates, plan.policy)
+    minimum = exploration + structure
+    return {
+        "exploration": exploration,
+        "structure": structure,
+        "confirmation": confirmation,
+        "minimum": minimum,
+        "maximum": minimum + confirmation,
+        "max_fits": plan.budget.max_fits,
+        "sufficient": plan.budget.max_fits >= minimum,
+    }
+
+
+def budget_shortfall_message(requirements: dict[str, Any]) -> str:
+    """One sentence saying why ``max_fits`` cannot complete the protocol."""
+    return (
+        f"max_fits={requirements['max_fits']} is below the "
+        f"{requirements['minimum']} fits the protocol needs before any "
+        f"verdict ({requirements['exploration']} exploration + "
+        f"{requirements['structure']} reserved null-reference fits); "
+        f"raise SearchBudget(max_fits) to at least {requirements['maximum']} "
+        f"to also cover confirmation, or lower null_replicates"
+    )
+
+
 class AutoCluster(ClusterMixin, BaseEstimator):
     """Clustering search with explicit geometry and stability evidence.
 
@@ -206,6 +246,9 @@ class AutoCluster(ClusterMixin, BaseEstimator):
             ),
             "max_fits": plan.budget.max_fits,
             "exploration_fits_per_candidate": 2 if holdout else 1,
+            "fit_requirements": fit_requirements(
+                plan, self.objective, holdout
+            ),
             "note": (
                 "Validation only; no fitted statistics are retained. "
                 "Pairwise memory is guarded at execution."
@@ -239,6 +282,18 @@ class AutoCluster(ClusterMixin, BaseEstimator):
                 stacklevel=2,
             )
         plan = self._prepare(X)
+        requirements = fit_requirements(
+            plan, self.objective, self._uses_holdout()
+        )
+        if not requirements["sufficient"]:
+            # Said before any fit is spent: the search below can only end
+            # as incomplete, and the user may prefer to stop here.
+            warnings.warn(
+                "The search cannot complete: "
+                + budget_shortfall_message(requirements),
+                UserWarning,
+                stacklevel=2,
+            )
         run = _SearchRun(
             plan=plan,
             objective=self.objective,
@@ -800,10 +855,18 @@ class _SearchRun:
                 "geometry/backend"
             )
         if self.interrupted:
-            self.incomplete_reasons.append(
-                "search grid or confirmation truncated by candidate/fit/time "
-                "budget"
+            requirements = fit_requirements(
+                self.plan, self.objective, self.use_holdout
             )
+            if not requirements["sufficient"]:
+                self.incomplete_reasons.append(
+                    budget_shortfall_message(requirements)
+                )
+            else:
+                self.incomplete_reasons.append(
+                    "search grid or confirmation truncated by "
+                    "candidate/fit/time budget"
+                )
         # A partial protocol can never yield a validated recommendation.
         if self.incomplete_reasons:
             return "incomplete"

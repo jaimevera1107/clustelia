@@ -144,8 +144,12 @@ class ParallelParity(unittest.TestCase):
         kwargs = {"families": ("kmeans", "agglomerative"),
                   "k_range": (2, 3, 4),
                   "budget": SearchBudget(max_fits=14)}
-        serial = _fit(X, 1, **kwargs)
-        parallel = _fit(X, 2, **kwargs)
+        # The shortfall is announced before fitting (budget-feasibility
+        # check); both paths must still spend and report the same fits.
+        with self.assertWarnsRegex(UserWarning, "cannot complete"):
+            serial = _fit(X, 1, **kwargs)
+        with self.assertWarnsRegex(UserWarning, "cannot complete"):
+            parallel = _fit(X, 2, **kwargs)
         self.assertEqual(serial.selection_status, "incomplete")
         self.assertEqual(serial.metadata["fits_used"], 14)
         _assert_same(self, _snapshot(serial), _snapshot(parallel))
