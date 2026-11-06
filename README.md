@@ -49,11 +49,57 @@ Clustelia automates that workflow and makes every decision auditable:
 The result is an object you can interrogate: why each candidate was rejected, how stable
 the winner is, what characterises each cluster, and a report you can export.
 
+**Does it really abstain?** Yes, and it also fails in known ways. Four datasets through
+the same search, with the commands to reproduce them:
+[ABSTENTION_DEMO.md](https://github.com/jaimevera1107/clustelia/blob/main/docs/ABSTENTION_DEMO.md). The false-positive and
+false-negative rates per null reference (600 searches, Wilson intervals) and the runtime
+per dataset size are in [VALIDATION.md](https://github.com/jaimevera1107/clustelia/blob/main/docs/VALIDATION.md).
+
 ```text
 your table ──► search many models ──► structure test ──► stability check ──► recommended
                                             │                    │             or abstains
                                             └─ fails ────────────┴───────────► (with reasons)
 ```
+
+### How is this different from `clusteval`?
+
+[`clusteval`](https://github.com/erdogant/clusteval) is the closest
+well-known package, and for many tasks it is the simpler choice. It sweeps a
+range of `k`, scores each one with an internal index (silhouette, Davies-Bouldin
+or the derivative method) and returns the labels of the best-scoring one. The
+best score always exists, so a partition is always returned.
+
+Clustelia asks a question first: is the best score better than what the same
+search gets on data with no groups in it? Run both on 300 rows of pure Gaussian
+noise, where the right answer is "there are no clusters" (clusteval 2.2.7,
+agglomerative, seed 0):
+
+| | Pure noise (no groups) | Three separated blobs |
+|:--|:--|:--|
+| `clusteval`, silhouette | 24 clusters | 3 clusters |
+| `clusteval`, dbindex | 24 clusters | 22 clusters |
+| `clusteval`, derivative | 8 clusters | 13 clusters |
+| **Clustelia**, defaults | **abstains** (`no_admissible_solution`) | **3 clusters** |
+
+This is not a defect of `clusteval`: an internal index measures how good a
+partition is, not whether partitioning is warranted, and the package is honest
+about being a cluster-*evaluation* tool. It is a difference in the question
+being answered.
+
+| | `clusteval` | Clustelia |
+|:--|:--|:--|
+| Can return "no clustering" | No | Yes, as a first-class result |
+| Choice of `k` | Internal index over a sweep | Gap statistic against null references, after a structure test |
+| Stability of the winner | Not checked | Subsamples and alternative seeds, with explicit thresholds |
+| Mixed / categorical / ordinal data | Numeric input | Gower geometry with declared column roles |
+| Audit trail | Scores per `k` | Per-candidate rejection reasons, fit budget, evidence in `metadata` |
+| Cost | One fit per `k` | Tens to hundreds of fits (see [cost table](https://github.com/jaimevera1107/clustelia/blob/main/docs/VALIDATION.md)) |
+| Scope | Four algorithms, numeric | Four objectives, mixed data, abstention |
+
+Use `clusteval` when you already know you want a partition and need a quick,
+cheap choice of `k`. Use Clustelia when "should I cluster this at all?" is a
+real question and you need to defend the answer. The demonstration is in
+[ABSTENTION_DEMO.md](https://github.com/jaimevera1107/clustelia/blob/main/docs/ABSTENTION_DEMO.md).
 
 ### Is it for you?
 
@@ -222,6 +268,10 @@ are only partly aligned with the two groups split them further. That is exactly 
 `selected_k_at_boundary` is there to surface; `SelectionPolicy(boundary_k_policy=
 "abstain")` turns it into an abstention (see §7).
 
+A table of **only** categorical, ordinal or binary columns is supported: no numeric
+feature is required, Gower handles it and the structure test uses column permutations as
+the null reference. Declare the roles the same way and leave `numeric` empty.
+
 Missing values are rejected by default. Gower can compare each pair on its observed
 features with explicit safeguards: `GeometrySpec(kind="gower", scaling="none",
 missing="pairwise", min_comparable_share=0.25)`.
@@ -285,6 +335,28 @@ try:
 except NoRecommendationError:
     print("No validated clustering: nothing to predict with.")
 ```
+
+It also composes with `sklearn.Pipeline`, since it implements the estimator interface
+(`get_params`, `set_params`, cloning):
+
+```python
+from sklearn.datasets import load_iris
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from clustelia import AutoCluster
+
+pipeline = Pipeline([
+    ("scale", StandardScaler()),
+    ("cluster", AutoCluster(families=("kmeans",), k_range=(2, 3, 4), random_state=0)),
+]).fit(load_iris(as_frame=True).data)
+print(pipeline["cluster"].result_.selection_status)
+```
+
+**Reproducibility.** `random_state` is propagated to every stochastic part: null
+references, subsamples, alternative seeds and model initialisations. Two runs with the
+same data, configuration and seed produce identical statuses, labels, candidate tables
+and evidence; only `fit_seconds`, which is wall-clock time, differs. This is asserted
+end-to-end in [`tests/test_reproducibility.py`](https://github.com/jaimevera1107/clustelia/blob/main/tests/test_reproducibility.py).
 
 ### 5. Checking against known labels
 
@@ -489,7 +561,8 @@ public OpenML datasets with development and reserved splits: [VALIDATION.md](htt
 | [Validation](https://github.com/jaimevera1107/clustelia/blob/main/docs/VALIDATION.md) | Benchmarks, results, limitations, reproducibility |
 | [Development changes](https://github.com/jaimevera1107/clustelia/blob/main/docs/DEV2_CHANGES.md) | Gower comparability, CLARA, large tables |
 | [Roadmap](https://github.com/jaimevera1107/clustelia/blob/main/docs/ROADMAP.md) | Planned work |
-| [`examples/`](https://github.com/jaimevera1107/clustelia/tree/main/examples) | Runnable scripts: numeric, mixed, ordinal/binary, probabilistic, density, fuzzy |
+| [Abstention demo](https://github.com/jaimevera1107/clustelia/blob/main/docs/ABSTENTION_DEMO.md) | Four datasets showing when it abstains, when it does not, and a known failure |
+| [`examples/`](https://github.com/jaimevera1107/clustelia/tree/main/examples) | Runnable scripts: numeric, mixed, ordinal/binary, probabilistic, density, fuzzy, abstention demo |
 
 ## Development
 
