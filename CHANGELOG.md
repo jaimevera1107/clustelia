@@ -3,6 +3,16 @@
 All notable changes are documented here. The project follows
 [Semantic Versioning](https://semver.org/); 0.x releases may change the API.
 
+## Unreleased — README rewrite
+
+- README rewritten for first-time users: what the library does and why,
+  scope table, installation from GitHub (the PyPI name holds a 0.0.0
+  placeholder), status-by-status guidance, eight runnable usage guides
+  (abstention, mixed data, grids, scikit-learn API, external labels,
+  other objectives, evidence policy, reports), decision flowchart and an
+  explicit limitations section. Every Python snippet was executed against
+  `main`.
+
 ## Unreleased — null family and boundary policy (follow-ups of the
 ## November 2026 validation study)
 
