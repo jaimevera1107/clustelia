@@ -59,7 +59,7 @@ a report; see `docs/LOCAL_VERIFICATION.md`.
 
 ## Release checklist
 
-1. License: BSD-3-Clause (set); keep `LICENSE` and `pyproject.toml` in sync.
+1. License: MIT (set); keep `LICENSE` and `pyproject.toml` in sync.
 2. Confirm the distribution name `clustelia` is registered on PyPI.
 3. Update `src/clustelia/_version.py` and `CHANGELOG.md`.
 4. Make sure CI is green on every OS / Python / extras combination, and

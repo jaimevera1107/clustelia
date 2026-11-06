@@ -3,6 +3,13 @@
 All notable changes are documented here. The project follows
 [Semantic Versioning](https://semver.org/); 0.x releases may change the API.
 
+## Unreleased — license change
+
+- License changed from BSD-3-Clause to MIT (`LICENSE`, `pyproject.toml`,
+  README badge and section, contributor and roadmap notes). Copyright
+  holder unchanged. The historical entry below that set BSD-3-Clause is
+  kept as history.
+
 ## Unreleased — README rewrite
 
 - README rewritten for first-time users: what the library does and why,
