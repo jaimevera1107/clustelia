@@ -243,6 +243,7 @@ model = AutoCluster(
 )
 plan = model.plan(X)                     # validates and lists candidates, fits nothing
 print(len(plan["candidates"]), "candidates planned")
+print(plan["fit_requirements"])          # fits needed vs max_fits, before spending any
 model.fit(X)
 
 # b) Explicit candidates (mutually exclusive with `families`)
@@ -359,10 +360,12 @@ print(result.summary()["status"], result.summary()["selected_k"])   # recommende
 ```
 
 > [!IMPORTANT]
-> More null replicates need more fits. The same policy with the default `balanced`
-> budget (320 fits) ends as `incomplete`, reason *"search grid or confirmation truncated
-> by candidate/fit/time budget"*. Use `effort="thorough"` or
-> `budget=SearchBudget(max_fits=...)`.
+> More null replicates need more fits. With the default `balanced` budget (320 fits) the
+> same policy would need 420 fits before any verdict, so Clustelia warns **before
+> fitting** and stops early with the exact shortfall in `incomplete_reasons`
+> (*"max_fits=320 is below the 420 fits the protocol needs… raise
+> SearchBudget(max_fits) to at least 485"*). `plan(X)["fit_requirements"]` gives the same
+> numbers without fitting anything.
 
 | Option | Values | Effect |
 |:--|:--|:--|
@@ -471,7 +474,7 @@ What it **does not** guarantee:
   lymph, credit-approval) the default policy abstains where a silhouette-based policy
   finds weak partitions. Review the evidence before switching policies.
 - **Non-compact objectives** have no structure test (§6).
-- **Maturity.** `0.1.0` is the first public release of an alpha-stage library;
+- **Maturity.** 0.x releases of an alpha-stage library;
   the API may still change before 1.0.
 
 The validation, failures and abstentions included, covers synthetic benchmarks and 18
