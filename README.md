@@ -16,7 +16,7 @@ Clustelia tries many clustering models on your data, checks whether the result i
 and stable, and **tells you when there is no clustering worth trusting**.
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-BSD--3--Clause-526477?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-526477?style=flat-square)](LICENSE)
 ![Status](https://img.shields.io/badge/status-0.3.0a1%20alpha-7B8794?style=flat-square)
 [![Tests](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml/badge.svg)](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml)
 
@@ -509,6 +509,6 @@ Contribution guidelines: [CONTRIBUTING.md](CONTRIBUTING.md). History:
 
 ## License
 
-[BSD 3-Clause](LICENSE).
+[MIT](LICENSE).
 
 <sub>Logo created with ChatGPT (OpenAI).</sub>

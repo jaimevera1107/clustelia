@@ -8,7 +8,7 @@ State of **0.3.0a1**.
 | M2: families | MiniBatchKMeans, BIRCH, BisectingKMeans, Spectral, OPTICS, HDBSCAN, optional FCM, Bayesian mixture; Ward/OPTICS structures | Public hierarchies for more adapters, sensitivity |
 | M3: categorical/mixed | Nominal, ordinal and asymmetric binary semantics; weighted Gower; medoids and Gower k-prototypes (k-modes on nominal data); Gower pairwise deletion of missing values | Gap reference for nominal data |
 | M4: differentiation | Deduplicated alternatives, manual selection, `ambiguous` status, common support, **null-reference test**, **gap-statistic choice of k** | Constraints, consensus, null references for mixtures and density |
-| M5: validation/distribution | Installable typed package, 173 tests under unittest (about 177 items under pytest; 88% branch coverage measured on 3 November 2026, Windows 11 / Python 3.14, was 93% at 0.3.0.dev0), property tests, examples, persistence, CI matrix, build check, release workflow, synthetic benchmarks with three reserved splits, 18-dataset OpenML benchmark with a reserved split | Cost reductions for large n, publication (BSD-3-Clause license set) |
+| M5: validation/distribution | Installable typed package, 173 tests under unittest (about 177 items under pytest; 88% branch coverage measured on 3 November 2026, Windows 11 / Python 3.14, was 93% at 0.3.0.dev0), property tests, examples, persistence, CI matrix, build check, release workflow, synthetic benchmarks with three reserved splits, 18-dataset OpenML benchmark with a reserved split | Cost reductions for large n, publication (MIT license set) |
 
 ## Next milestone
 
@@ -49,7 +49,7 @@ State of **0.3.0a1**.
    budget exhaustion mid-replicate (only reachable through the soft
    deadline), backend failure inside a null replicate, k-prototypes
    empty-cluster repair, `null_scope="family"` rejection bookkeeping.
-4. **Release:** TestPyPI then PyPI (license BSD-3-Clause is set).
+4. **Release:** TestPyPI then PyPI (license MIT is set).
 
 ## Decisions kept
 

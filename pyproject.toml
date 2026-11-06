@@ -9,7 +9,7 @@ description = "Clustering search with explicit geometry, reproducible seeds and 
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Jaime Vera-Jaramillo" }]
-license = "BSD-3-Clause"
+license = "MIT"
 license-files = ["LICENSE"]
 keywords = ["clustering", "model selection", "stability", "gower", "dbcv", "scikit-learn"]
 classifiers = [
