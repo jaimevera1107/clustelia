@@ -1,4 +1,4 @@
-# Convenience API and interpretable outputs — 0.3.0a1
+# Convenience API and interpretable outputs
 
 The **expert API** (`AutoCluster`, explicit `Schema`, `GeometrySpec`,
 `SelectionPolicy` and `SearchBudget`) is still supported with unchanged defaults.

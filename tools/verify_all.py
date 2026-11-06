@@ -130,6 +130,12 @@ def outcome(code: int, output: str) -> tuple[str, str]:
     return ("PASS" if code == 0 else "FAIL"), tail(output)
 
 
+EQUIVALENCE_REFERENCE: str = "reference_0.3.0a1.pkl"
+"""Frozen behavioural reference, named after the development snapshot that
+produced it. It is deliberately independent of the package version: the
+public release numbering (0.1.0) restarted after internal snapshots."""
+
+
 def current_version() -> str:
     """Package version read from ``_version.py`` without importing it."""
     text = (ROOT / "src" / "clustelia" / "_version.py").read_text()
@@ -281,8 +287,7 @@ def step_clean_install(ctx: Context) -> tuple[str, str]:
 
 def step_equivalence(ctx: Context) -> tuple[str, str]:
     """Compare a fresh capture with the stored reference (tolerance mode)."""
-    reference = ROOT / "docs" / "equivalence" / (
-        f"reference_{current_version()}.pkl")
+    reference = ROOT / "docs" / "equivalence" / EQUIVALENCE_REFERENCE
     if not reference.exists():
         return "FAIL", f"missing reference {reference.name}"
     fresh = ctx.workdir / "equivalence.pkl"
