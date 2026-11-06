@@ -17,7 +17,7 @@ and stable, and **tells you when there is no clustering worth trusting**.
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-526477?style=flat-square)](https://github.com/jaimevera1107/clustelia/blob/main/LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/clustelia?style=flat-square&color=2A6EA6)](https://pypi.org/project/clustelia/)
+[![PyPI](https://img.shields.io/pypi/v/clustelia?style=flat-square&color=2A6EA6&cacheSeconds=3600)](https://pypi.org/project/clustelia/)
 ![Status](https://img.shields.io/badge/status-alpha-7B8794?style=flat-square)
 [![Tests](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml/badge.svg)](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml)
 
