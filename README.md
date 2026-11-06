@@ -2,306 +2,513 @@
 
 # Clustelia
 
-
 <p align="center">
   <img
     src="https://raw.githubusercontent.com/jaimevera1107/clustelia/main/docs/Clustelia%20Hexagon%20Cluster%20Logo.png"
     alt="Clustelia logo"
-    width="360"
+    width="300"
   />
 </p>
 
-
 ### Clustering with evidence, not guesswork.
 
-**Explore, compare, and validate clustering solutions — without forcing a partition.**
-
-Clustelia is a Python library for automatic clustering of numerical, categorical, ordinal, binary, and mixed data. It searches multiple algorithms, evaluates candidates in a common reference geometry, and can **abstain from recommending a solution** when the evidence is insufficient.
+Clustelia tries many clustering models on your data, checks whether the result is real
+and stable, and **tells you when there is no clustering worth trusting**.
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-BSD--3--Clause-526477?style=flat-square)](LICENSE)
-![Development](https://img.shields.io/badge/Development-0.3.0a1%20%7C%20alpha-7B8794?style=flat-square)
-[![PyPI](https://img.shields.io/badge/PyPI-clustelia-2A6EA6?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/clustelia/)
+![Status](https://img.shields.io/badge/status-0.3.0a1%20alpha-7B8794?style=flat-square)
+[![Tests](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml/badge.svg)](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml)
 
-[**Quick start**](#quick-start) · [**Methodology**](#how-selection-works) · [**Mixed data**](#mixed-data) · [**Documentation**](#documentation) · [**Contributing**](#development)
+[What it is](#what-is-clustelia) · [Install](#installation) · [Quick start](#quick-start) · [Usage guide](#usage-guide) · [How it decides](#how-clustelia-decides) · [Scope and limits](#scope-and-limitations) · [Docs](#documentation)
 
 </div>
 
 ---
 
-> [!NOTE]
-> **Development status — `0.3.0a1`.** This README describes the alpha source version, which may be newer than the package currently published on PyPI. Install from the development checkout to use the APIs shown below until a matching release is published. Clustelia is under active validation and is **not yet a production guarantee**.
+## What is Clustelia?
 
-## Why Clustelia?
+Any clustering algorithm will split your data into groups, **even when the data has no
+groups at all**. Run k-means with `k=4` on random noise and you get four clusters, nicely
+coloured, completely meaningless. Choosing the algorithm and the number of clusters, and
+checking that the answer is not an artefact, is usually left to the analyst.
 
-Most clustering workflows can produce labels even when the data contain no meaningful cluster structure. Clustelia treats choosing **not** to recommend a partition as a valid analytical result.
+Clustelia automates that workflow and makes every decision auditable:
 
-| Capability | What it means |
+1. **Searches** a grid of algorithms (k-means, medoids, Ward, spectral, BIRCH, Gaussian
+   mixtures, DBSCAN/HDBSCAN, fuzzy c-means…) and numbers of clusters.
+2. **Compares them fairly**, scoring every candidate in the same reference geometry.
+3. **Tests for structure**: the best partition must beat what the same search finds on
+   structureless "null" versions of your data.
+4. **Checks stability**: the winner is refitted on subsamples and with other random seeds
+   and must reproduce itself.
+5. **Recommends one solution, or abstains.** "No reliable clustering" is a valid,
+   explicit answer, never a silent failure.
+
+The result is an object you can interrogate: why each candidate was rejected, how stable
+the winner is, what characterises each cluster, and a report you can export.
+
+```text
+your table ──► search many models ──► structure test ──► stability check ──► recommended
+                                            │                    │             or abstains
+                                            └─ fails ────────────┴───────────► (with reasons)
+```
+
+### Is it for you?
+
+| Good fit | Not a good fit (today) |
 |:--|:--|
-| **Evidence-based selection** | Compare observed structure against structureless reference data before recommending a compact clustering solution. |
-| **Multiple algorithms** | Explore compact, probabilistic, density-based, and fuzzy clustering families under explicit objectives. |
-| **Mixed-data support** | Model numeric, nominal, ordered, and asymmetric binary features with Gower geometry. |
-| **Reproducible experiments** | Control random seeds, search budgets, candidate specifications, and confirmation runs. |
-| **Interpretable results** | Inspect ranked candidates, selection reasons, cluster profiles, and fitted pipelines — including when the search abstains. |
-
-Clustelia does not treat a good score as proof that clusters exist. **A fitted candidate is not automatically a validated recommendation.**
+| Segmenting customers, firms, regions, survey respondents | Time series, panels or grouped data (rows must be resampleable independently) |
+| Numeric, categorical, ordinal, binary or **mixed** tables | Large tables with pairwise methods (a few thousand rows hit the memory guard) |
+| You need to justify *why* a segmentation is credible | Streaming or out-of-core clustering |
+| You would rather get "no answer" than a misleading one | Images, text or graphs without a prior tabular representation |
+| Reproducible analyses (fixed seeds, logged decisions) | Production-critical systems (the library is an alpha) |
 
 ## Installation
 
-**Requirements:** Python 3.11 or newer.
+Requires **Python 3.11+**.
 
-For the version currently available on PyPI:
-
-```bash
-python -m pip install clustelia
-```
-
-For the **`0.3.0a1` source version** described in this README, use a checkout containing that code:
+> [!WARNING]
+> The `clustelia` name on PyPI currently holds a placeholder (`0.0.0`), **not** this
+> library. Until a real release is published, install from GitHub.
 
 ```bash
-# Run inside the project directory
-python -m pip install -e ".[dev,all]"
+# Core library
+pip install "clustelia @ git+https://github.com/jaimevera1107/clustelia.git"
+
+# With every optional feature (plots, Excel export, DBCV, fuzzy c-means)
+pip install "clustelia[all] @ git+https://github.com/jaimevera1107/clustelia.git"
 ```
 
-Install only the extras you need:
-
-| Extra | Adds |
-|:--|:--|
-| `clustelia[viz]` | Visualizations with Matplotlib |
-| `clustelia[reports]` | Excel-related functionality with openpyxl |
-| `clustelia[density]` | DBCV validity index through the optional HDBSCAN package |
-| `clustelia[fuzzy]` | Fuzzy C-Means with scikit-fuzzy |
-| `clustelia[all]` | All optional features |
-| `.[dev]` from source | Testing, linting, type-checking, and package build tools |
-
-> [!IMPORTANT]
-> The **HDBSCAN clustering model** uses scikit-learn; the `density` extra is for DBCV. Optional backends with exact version requirements are checked for compatibility rather than silently substituted.
+| Extra | Adds | Needed for |
+|:--|:--|:--|
+| `viz` | matplotlib | `plot_*` methods |
+| `reports` | openpyxl | `export_report("file.xlsx")` |
+| `density` | hdbscan | the DBCV score used by the density objective |
+| `fuzzy` | scikit-fuzzy | fuzzy c-means |
+| `all` | everything above | |
 
 ## Quick start
-
-The `cluster()` entry point provides sensible effort presets while preserving access to the full clustering engine.
 
 ```python
 from sklearn.datasets import load_iris
 from clustelia import cluster
 
-X = load_iris(as_frame=True).frame.drop(columns="target")
+X = load_iris(as_frame=True).data          # 150 flowers, 4 measurements
 
-result = cluster(X, effort="balanced", random_state=42)
+result = cluster(X, random_state=42)
 
-print(result.summary())
-print(result.ranking_table())
+print(result.selection_status)             # 'recommended'
+print(result.report(top=3))                # human-readable summary
 
-solution = result.recommended_solution()
-if solution is None:
-    print("No sufficiently supported clustering solution was recommended.")
-else:
+solution = result.recommended_solution()   # None when Clustelia abstains
+if solution is not None:
+    print(solution.sizes_table())
     print(solution.profile_table())
-    # solution.plot_sizes()  # requires the 'viz' extra
 ```
 
-Three presets balance runtime against the amount of validation evidence:
+Output of `report()` (abridged, scores rounded):
 
-| Preset | Null replicates | Subsamples | Max. fits | Intended use |
-|:--|--:|--:|--:|:--|
-| `quick` | 2 | 3 | 100 | Fast exploration; weaker validation evidence |
-| `balanced` | 9 | 10 | 320 | Default exploration and confirmation |
-| `thorough` | 19 | 15 | 800 | More extensive evidence; higher computational cost |
+```text
+# Clustelia experiment
+- Selection: **recommended**
+- Objective: compact
+- Fit attempts: 246
+- Candidates evaluated: 21
+- Recommendation: kmeans (3 clusters)
 
-*Effort is a computational preset, not a calibrated confidence level.* You can override its selection policy or budget explicitly. See [Convenience API](docs/CONVENIENCE_API.md) for parameters, automatic identifier detection, summaries, plots, and exports.
+| recommended | algorithm     | n_clusters | coverage | silhouette | confirmed |
+|-------------|---------------|------------|----------|------------|-----------|
+| True        | kmeans        | 3          | 1.0      | 0.460      | True      |
+| False       | medoids       | 3          | 1.0      | 0.451      | True      |
+| False       | agglomerative | 3          | 1.0      | 0.447      | True      |
+```
 
-### Understanding the result
+21 candidates were evaluated, 246 fits were spent in total (including null references and
+stability checks), and three clusters were recommended.
 
-Clustelia can return these selection states:
+### Reading the result
 
-| Status | Interpretation |
-|:--|:--|
-| `recommended` | A candidate passed the applicable selection and confirmation criteria. |
-| `ambiguous` | The available evidence does not support a unique recommendation. |
-| `no_admissible_solution` | No candidate passed the applicable admissibility criteria. |
-| `incomplete` | The search/confirmation was truncated, a required statistic was unavailable, or a reference-validation fit failed. |
+Every run ends in one of four states. **Always check it before using labels.**
 
-Always check for a recommendation before accessing recommended-model convenience properties. With `AutoCluster`, `model.labels_`, `model.best_estimator_`, `predict()`, and `fit_predict()` raise `NoRecommendationError` when none exists. You can still inspect individual fitted candidates through `result.select(candidate_id)`; manual selection **does not validate** them.
-
-## How selection works
-
-For the **compact** objective, the default P2 policy makes three distinct decisions:
-
-1. **Is there evidence of structure?** Candidate partitions are compared with structureless reference datasets (uniform references in a principal-axis box for Euclidean geometry, or column permutations for Gower). The observed best silhouette must exceed its reference counterparts.
-2. **How many clusters?** The gap statistic uses the null-reference fits to choose `k`, rather than relying only on the silhouette, which can favor a coarser partition.
-3. **Which fitted candidate is most reliable?** Eligible candidates are confirmed through subsampling and alternative random seeds. The final choice considers stability, coverage, performance, and computation cost.
-
-The reference comparison is a statistical screening rule, **not proof of the existence or absence of natural clusters**. With nine null replicates, the nominal Monte Carlo resolution is `1 / (9 + 1) = 10%` under exchangeability. The fitted data-dependent references do **not** guarantee exact calibration or a universal 10% false-recommendation rate. Increasing the evidence budget does not make every dataset clusterable.
-
-<details>
-<summary><strong>Technical details of P2 selection</strong></summary>
-
-- The default full-grid null test uses `null_replicates=9`; it can exit early on structureless data. A failed structure check produces `no_admissible_solution` without spending confirmation fits.
-- For each `k`, the candidate with the largest `Gap(k) = mean(log W*k) - log Wk` represents that value; the one-standard-error rule selects the smallest qualifying `k`. A selection at the top of `k_range` triggers a warning to widen the search.
-- The default confirmation uses 10 subsamples of 80% of rows and 3 additional seeds for stochastic candidates. Admissibility requires coverage ≥ 0.8, at least 80% evaluable replicas, and median adjusted Rand index ≥ 0.7 on every applicable axis.
-- Silhouettes within 0.02 of the best eligible candidate are tied; ties are resolved using stability, coverage, fitting cost, and candidate identifier.
-- Alternatives include `SelectionPolicy(k_selection="silhouette")`, `null_scope="family"`, and `SelectionPolicy.p0()`. They **change the evidence policy** and should not be treated as equivalent defaults.
-- The null-reference test described here belongs to the **compact** objective; other objectives have different selection rules.
-
-See [Methods](docs/METHODS.md) and [Validation](docs/VALIDATION.md) for definitions, experimental protocol, and limitations.
-
-</details>
-
-## Algorithms and objectives
-
-Clustelia keeps objectives and their evaluation metrics explicit. Scores are **not compared across incompatible objectives, geometries, or representations**.
-
-| Objective | Supported families / adapters | Main evidence |
+| `selection_status` | Meaning | What to do |
 |:--|:--|:--|
-| **Compact** | KMeans, MiniBatchKMeans, BIRCH, BisectingKMeans, Spectral, Ward, medoids, Gower k-prototypes | Silhouette in a common reference geometry, followed by selection/confirmation |
-| **Probabilistic** | GaussianMixture, BayesianGaussianMixture | BIC for GaussianMixture or held-out likelihood as applicable |
-| **Density** | DBSCAN, OPTICS, HDBSCAN (scikit-learn) | DBCV with the compatible Euclidean reference and optional backend |
-| **Fuzzy** | Fuzzy C-Means | Generalized Xie–Beni with a fixed fuzzifier |
+| `recommended` | One candidate passed the structure test and the stability checks. | Use `result.recommended_solution()`. |
+| `no_admissible_solution` | Nothing passed: no structure beyond the null reference, or nothing was stable. | Treat it as a finding. `ranking_table()` shows each rejection reason. |
+| `ambiguous` | Several candidates passed but none is clearly better. | Inspect `metadata["admissible_candidates"]` and choose with domain knowledge via `result.select(id)`. |
+| `incomplete` | The protocol could not finish (budget exhausted, backend missing, a fit failed). | Read `summary()["incomplete_reasons"]`, then raise the budget or install the extra. |
 
-Use `adapter_capabilities()` to inspect model capabilities and optional-backend availability. Transductive adapters (Ward, Spectral, DBSCAN, OPTICS, and HDBSCAN) do not support assignment to new observations.
+`result.summary()` returns the key facts as a dictionary: `status`, `algorithm`,
+`n_clusters`, `selected_k`, `selected_k_at_boundary`, `null_family`, `fits_used`,
+`selection_warnings`, `incomplete_reasons`, and more.
 
-## Mixed data
+## Usage guide
 
-For mixed tables, declare the roles of your variables explicitly instead of hoping the algorithm infers their meaning.
+Every snippet below is self-contained and was run against the current `main`.
+
+### 1. When there are no clusters
+
+This is the case Clustelia was built for. A single Gaussian cloud has no groups:
 
 ```python
+import numpy as np
+from clustelia import cluster
+
+X = np.random.default_rng(0).normal(size=(300, 4))
+
+result = cluster(X, random_state=0)
+print(result.selection_status)                         # 'no_admissible_solution'
+print(result.recommended_solution())                   # None
+print(result.metadata["structure_test"]["passed"])     # False
+
+# The fitted candidates stay available, but choosing one by hand does NOT validate it
+best_id = result.ranking_table(top=1)["candidate_id"].iloc[0]
+print(result.select(best_id).sizes_table())
+```
+
+The structure test failed, so no stability fits were spent and nothing was recommended.
+A plain k-means would have returned four clusters here without complaint.
+
+### 2. Mixed data (numeric + categorical + ordinal + binary)
+
+Declare what each column means. Clustelia never guesses ordinal order or binary
+semantics; with mixed types it uses [Gower distance](docs/METHODS.md).
+
+```python
+import numpy as np
+import pandas as pd
 from clustelia import AutoCluster, GeometrySpec, Schema
+
+rng = np.random.default_rng(1)
+n = 150
+firms = pd.DataFrame({
+    "firm_id": np.arange(2 * n),
+    "revenue": np.r_[rng.normal(100, 15, n), rng.normal(300, 40, n)],
+    "employees": np.r_[rng.integers(2, 20, n), rng.integers(40, 200, n)],
+    "sector": np.r_[rng.choice(["retail", "services"], n, p=[0.6, 0.4]),
+                    rng.choice(["retail", "manufacturing"], n, p=[0.2, 0.8])],
+    "size": np.r_[rng.choice(["small", "medium"], n, p=[0.8, 0.2]),
+                  rng.choice(["medium", "large"], n, p=[0.3, 0.7])],
+    "exports": np.r_[rng.binomial(1, 0.1, n), rng.binomial(1, 0.6, n)],
+})
 
 model = AutoCluster(
     schema=Schema(
-        numeric=["age", "income"],
-        categorical=["activity"],
-        ordinal={"education": ("primary", "secondary", "tertiary")},
-        binary=["exports"],            # asymmetric: 0 / 1
-        identifiers=["firm_id"],
+        numeric=["revenue", "employees"],
+        categorical=["sector"],                          # unordered labels
+        ordinal={"size": ("small", "medium", "large")},  # order matters
+        binary=["exports"],                              # 1 = presence; joint zeros ignored
+        identifiers=["firm_id"],                         # kept out of the distance
     ),
     geometry=GeometrySpec(kind="gower", scaling="none"),
-    k_range=(2, 3, 4),
+    k_range=(2, 3, 4, 5),
     random_state=42,
-).fit(df)  # df is your pandas DataFrame
+).fit(firms)
+
+result = model.result_
+summary = result.summary()
+print(summary["status"], summary["algorithm"], summary["n_clusters"])
+print(summary["selected_k_at_boundary"])                 # True means: widen k_range
+
+solution = result.recommended_solution()
+if solution is not None:
+    print(solution.feature_importance_table())           # which variables separate clusters
+    print(solution.profile_table())                      # per-cluster medians, top categories
 ```
 
-With an explicit `Schema`, every column must be declared exactly once. Without one, numeric dtypes are treated as numeric and other features as nominal; **ordinal and asymmetric binary semantics are never inferred**. For non-numeric features, the default reference geometry is Gower.
+With an explicit `Schema` every column must be declared exactly once. Without one,
+numeric dtypes are treated as numeric, everything else as nominal, and columns clearly
+named as IDs (`id`, `firm_id`, `uuid`…) with unique values are excluded automatically.
 
-Gower uses per-variable dissimilarities on `[0, 1]`: range-normalized differences for numeric variables, matching for nominal ones, ordered-level differences for ordinal features, and asymmetric-binary comparisons that exclude joint absences. Weights can be supplied when some features should contribute more strongly.
+In this example the selected `k` sits at the top of `k_range`: nominal categories that
+are only partly aligned with the two groups split them further. That is exactly what
+`selected_k_at_boundary` is there to surface; `SelectionPolicy(boundary_k_policy=
+"abstain")` turns it into an abstention (see §7).
 
-Two default Gower candidate families are available: **medoids** (dense pairwise distances and seeded restarts) and **Gower k-prototypes** (assignable prototypes, typically lower pairwise-memory requirements). These are not interchangeable with PAM or Huang's k-prototypes.
+Missing values are rejected by default. Gower can compare each pair on its observed
+features with explicit safeguards: `GeometrySpec(kind="gower", scaling="none",
+missing="pairwise", min_comparable_share=0.25)`.
 
-<details>
-<summary><strong>Missing values, vectorized Gower, and comparability</strong></summary>
-
-Missing values are rejected by default. For Gower, `missing="pairwise"` compares each pair on observed features, subject to explicit comparability safeguards:
-
-```python
-geometry = GeometrySpec(
-    kind="gower",
-    scaling="none",
-    missing="pairwise",
-    incomparable="max",
-    min_comparable_share=0.25,
-)
-```
-
-Use `null_blocks` to preserve specified dependencies in permuted reference data. `incomparable="zero"` is a legacy compatibility option and **must not** be interpreted as evidence of similarity. Every row needs at least one observed feature; the pairwise approach assumes missingness is not informative about cluster membership.
-
-The standard Gower backend preserves reference-stable summation. An optional `gower_backend="vectorized"` uses SciPy kernels for complete-case distances; verify comparability before relying on exact historical equivalence.
-
-See [Convenience API](docs/CONVENIENCE_API.md) and [Development changes](docs/DEV2_CHANGES.md).
-
-</details>
-
-## Advanced configuration
-
-Use `AutoCluster` to control the geometry, algorithms, and resource limits directly:
+### 3. Choosing algorithms and the range of k
 
 ```python
+from sklearn.datasets import make_blobs
 from clustelia import AutoCluster, CandidateSpec, GeometrySpec, SearchBudget
 
-model = AutoCluster(
-    geometry=GeometrySpec(kind="euclidean", scaling="robust"),
-    candidates=(
-        CandidateSpec("kmeans", k=3),
-        CandidateSpec("kmeans", k=3, pca_variance=0.95),
-        CandidateSpec("agglomerative", k=3),
-        CandidateSpec("medoids", k=3),
-    ),
-    budget=SearchBudget(max_fits=200, max_candidates=20, timeout_s=300),
-    random_state=42,
-)
+X, _ = make_blobs(n_samples=400, centers=4, cluster_std=0.8, random_state=7)
 
-plan = model.plan(X)  # validates and lists candidates; does not fit
+# a) Automatic grid: these families × these k values
+model = AutoCluster(
+    families=("kmeans", "agglomerative", "medoids"),
+    k_range=range(2, 9),
+    geometry=GeometrySpec(kind="euclidean", scaling="robust"),
+    random_state=0,
+)
+plan = model.plan(X)                     # validates and lists candidates, fits nothing
+print(len(plan["candidates"]), "candidates planned")
 model.fit(X)
+
+# b) Explicit candidates (mutually exclusive with `families`)
+model = AutoCluster(
+    candidates=(
+        CandidateSpec("kmeans", k=4),
+        CandidateSpec("kmeans", k=4, pca_variance=0.95),  # fitted on PCA, scored in the reference geometry
+        CandidateSpec("agglomerative", k=4),
+    ),
+    budget=SearchBudget(max_fits=200, timeout_s=300),
+    random_state=0,
+).fit(X)
+print(model.result_.selection_status)
 ```
 
-Use `families=(...)` to generate an automatic grid over `k_range`, **or** `candidates=(...)` for an explicit set; they are mutually exclusive. PCA may change the *fitting* space, but compact candidates are evaluated in the common reference geometry.
+`adapter_capabilities()` lists every algorithm, its objective, its backend and whether it
+can assign new rows. Ward, spectral, DBSCAN, OPTICS and HDBSCAN are transductive
+(no `predict`).
 
-### Resource-aware execution
+### 4. scikit-learn style: fit, labels, predict new rows
 
-- Input data are copied and never silently imputed, modified, or densified. Invalid inputs and unsupported sample weights raise explicit errors.
-- `SearchBudget` tracks every fit attempt, including errors and confirmation runs. A truncated search reports `incomplete` instead of silently weakening criteria.
-- `timeout_s` is a **soft** limit checked between fits. `max_pairwise_mb` prevents excessively large *estimated* dense pairwise allocations; it is not a process-memory limit.
-- The null-reference phase can use multiple worker processes through `SearchBudget(workers=...)`. This trades memory for throughput without changing the intended seeds and fit counts.
-- For larger tables, CLARA-style medoids are an **opt-in approximation** (`CandidateSpec("clara", ...)`). They do not make the full workflow out-of-core.
-
-## Saving and loading
+`AutoCluster` is a scikit-learn estimator. Instead of returning labels nobody validated,
+`labels_` and `predict` raise `NoRecommendationError` when the search abstained.
 
 ```python
-from clustelia import save, load
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from clustelia import AutoCluster, NoRecommendationError
 
-save(model, "model.pkl")
-restored = load("model.pkl", trusted=True)
+X = load_iris(as_frame=True).data
+X_train, X_new = train_test_split(X, random_state=0)
+
+model = AutoCluster(families=("kmeans", "medoids"), k_range=range(2, 7), random_state=0)
+model.fit(X_train)
+
+try:
+    print(model.labels_[:10])
+    print(model.predict(X_new)[:10])     # assigns new rows to the recommended clusters
+except NoRecommendationError:
+    print("No validated clustering: nothing to predict with.")
+```
+
+### 5. Checking against known labels
+
+When ground truth exists (benchmarks, sanity checks), compare every candidate with it.
+The labels are only used for this table, never for selection.
+
+```python
+from sklearn.datasets import load_iris
+from clustelia import cluster
+
+data = load_iris(as_frame=True)
+result = cluster(data.data, random_state=0)
+print(result.external_evaluate(data.target).head())   # ARI and NMI per candidate
+```
+
+### 6. Other objectives: probabilistic, density, fuzzy
+
+Each objective has its own scoring rule, and scores are never compared across objectives.
+**The structure test only exists for the compact objective**: these searches cannot
+abstain for lack of structure and deserve more scrutiny.
+
+```python
+from sklearn.datasets import make_blobs, make_moons
+from clustelia import AutoCluster
+
+# Gaussian mixtures selected by BIC; the solution carries soft memberships
+X, _ = make_blobs(n_samples=400, centers=4, cluster_std=0.8, random_state=7)
+gmm = AutoCluster(objective="probabilistic", families=("gmm",),
+                  k_range=range(2, 7), random_state=0).fit(X)
+print(gmm.result_.selection_status, gmm.result_.summary()["n_clusters"])
+print(gmm.result_.recommended_solution().membership_)
+
+# Density-based clustering (DBSCAN / OPTICS / HDBSCAN) scored with DBCV
+X_moons, _ = make_moons(n_samples=400, noise=0.06, random_state=0)
+result = AutoCluster(objective="density", random_state=0).fit(X_moons).result_
+print(result.selection_status)                         # often 'ambiguous'
+for candidate_id in result.metadata["admissible_candidates"]:
+    print(candidate_id, result.select(candidate_id).sizes_table()["size"].tolist())
+```
+
+`ambiguous` is common for density and fuzzy searches: several admissible partitions can
+be practically identical (on the two moons above both admissible candidates recover the
+moons; one of them also flags a single point as noise) and no tie tolerance is calibrated for these scores, so the final
+choice is left to you, explicitly. Fuzzy c-means works the same way with
+`objective="fuzzy"` and the `fuzzy` extra.
+
+### 7. How much evidence: effort presets and selection policy
+
+`cluster()` offers three presets. They trade runtime for evidence; they are **not**
+confidence levels.
+
+| `effort` | Null replicates | Subsamples | Max fits | Use it for |
+|:--|--:|--:|--:|:--|
+| `quick` | 2 | 3 | 100 | A first look; weak evidence |
+| `balanced` (default) | 9 | 10 | 320 | Normal analysis |
+| `thorough` | 19 | 15 | 800 | Results you will report or publish |
+
+For finer control pass a `SelectionPolicy`:
+
+```python
+from sklearn.datasets import make_blobs
+from clustelia import SelectionPolicy, cluster
+
+X, _ = make_blobs(n_samples=400, centers=4, cluster_std=0.8, random_state=7)
+
+policy = SelectionPolicy(
+    null_replicates=19,               # Monte Carlo resolution 1/(19+1) = 5%
+    null_family="gaussian_copula",    # experimental null reference, see below
+    boundary_k_policy="abstain",      # never recommend a k stuck at the top of k_range
+)
+result = cluster(X, effort="thorough", selection=policy, random_state=0)
+print(result.summary()["status"], result.summary()["selected_k"])   # recommended 4
+```
+
+> [!IMPORTANT]
+> More null replicates need more fits. The same policy with the default `balanced`
+> budget (320 fits) ends as `incomplete`, reason *"search grid or confirmation truncated
+> by candidate/fit/time budget"*. Use `effort="thorough"` or
+> `budget=SearchBudget(max_fits=...)`.
+
+| Option | Values | Effect |
+|:--|:--|:--|
+| `null_replicates` | int, default 9 | Depth of the structure test. `0` disables it: no structural validation at all. |
+| `null_family` | `"auto"`, `"pca_uniform"`, `"gaussian_copula"`, `"permutation"` | What "no structure" looks like. `auto` uses a uniform box on the principal axes (numeric) or column permutations (Gower). `gaussian_copula` keeps every marginal distribution and the rank correlation, so one *skewed* cloud is not mistaken for clusters. Experimental, numeric only. |
+| `boundary_k_policy` | `"warn"` (default), `"abstain"` | What happens when the gap statistic picks the largest `k` you allowed. |
+| `k_selection` | `"auto"`, `"gap"`, `"silhouette"` | Rule for the number of clusters. |
+| `SelectionPolicy.p0()` | | Legacy policy without structure test. Different evidence, not an equivalent default. |
+
+Why the copula option exists: in a 30-seed development study the default reference
+recommended clusters for 17–20 of 30 single skewed (lognormal) clouds, the copula for
+0–1 of 30, while both detected 29–30 of 30 real three-group mixtures. Full table and
+caveats in [VALIDATION.md](docs/VALIDATION.md).
+
+### 8. Reports, plots and saving
+
+```python
+from sklearn.datasets import load_iris
+from clustelia import cluster, load, save
+
+result = cluster(load_iris(as_frame=True).data, random_state=0)
+
+result.export_report("clusters.html")   # also .md, .json, .csv, .xlsx (needs `reports`)
+
+solution = result.recommended_solution()
+# Plots need the `viz` extra and return matplotlib Axes, e.g.:
+#   solution.plot_sizes()
+#   solution.plot_profile("petal length (cm)")
+#   solution.plot_importance()
+#   solution.plot_projection()
+#   result.plot_candidates()
+
+save(result, "result.pkl")
+restored = load("result.pkl", trusted=True)
 ```
 
 > [!CAUTION]
-> Saved models use Python pickle and may contain the training data, including identifiers. **Only load files from trusted sources.** Deserialization can execute code; the subsequent dependency/environment compatibility check is not a security boundary. Cross-version migration is not guaranteed.
+> Saved files are Python pickles: they can contain your training data, identifiers
+> included, and loading one can execute code. Only load files you created yourself.
 
-## Validation and known limitations
+## How Clustelia decides
 
-The P2 selection policy has been evaluated on synthetic benchmarks and **18 public OpenML datasets**, using development and reserved splits. Results and the tested environment are documented in [VALIDATION.md](docs/VALIDATION.md).
+For the default **compact** objective, selection makes three separate decisions:
 
-| Area | Current limitation |
-|:--|:--|
-| **Categorical breadth** | On some wide nominal datasets, the gap-based policy abstains even when an alternative policy finds useful partitions. Review the evidence before changing selection criteria. |
-| **Time-dependent data** | Default subsampling assumes rows are suitable for independent resampling; time series, panel, and grouped designs need a different protocol. |
-| **Large pairwise geometry** | Ward and dense medoids can exceed the default 256 MiB pairwise-allocation guard at a few thousand rows. CLARA mitigates part of the cost, not all metric computations. |
-| **Incomplete experiments** | Unavailable optional backends, incompatible geometries, exhausted budgets, or insufficient confirmation are reported explicitly rather than replaced with another metric. |
-| **Maturity** | `0.3.0a1` is an alpha; the engineering contracts and tests are not a promise of production suitability. |
+```mermaid
+flowchart TD
+    A[Your table] --> B[Validate and encode<br/>Schema + reference geometry]
+    B --> C[Fit candidate grid<br/>families × k]
+    C --> D{Structure test:<br/>best silhouette beats<br/>every null reference?}
+    D -- no --> X[no_admissible_solution]
+    D -- yes --> E[Gap statistic chooses k<br/>one-standard-error rule]
+    E --> F{k at the top of k_range<br/>and boundary_k_policy = abstain?}
+    F -- yes --> I[incomplete:<br/>widen k_range]
+    F -- no --> G[Stability confirmation<br/>subsamples + other seeds]
+    G --> H{Stable candidates?}
+    H -- one clear winner --> R[recommended]
+    H -- several, no clear winner --> Y[ambiguous]
+    H -- none --> X
+```
 
-The published validation documents both favorable results and failure/abstention cases. For example, P2 abstained on several categorical OpenML datasets (including dermatology, credit-approval, lymph, and mushroom); the alternative silhouette policy sometimes returned weak-to-moderate agreement with class labels. These results should not be interpreted as a general guarantee for new data.
+1. **Is there structure?** The best silhouette of the grid is compared with the best
+   silhouette the *same search* obtains on structureless datasets built from your data.
+   It must beat all of them.
+2. **How many clusters?** The gap statistic (Tibshirani, Walther and Hastie, 2001) reuses
+   those reference fits and picks the smallest `k` within one standard error of the best.
+   A `k` at the edge of `k_range` is flagged.
+3. **Which candidate?** Candidates are refitted on 80% subsamples and with other seeds.
+   They must keep coverage ≥ 0.8 and a median adjusted Rand index ≥ 0.7. Near-ties in
+   silhouette (within 0.02) are broken by stability, coverage and cost.
+
+Every fit, including failures and null references, counts against `SearchBudget`; when
+the budget runs out the result is `incomplete`, never a quietly weaker recommendation.
+
+The structure test is a screening rule, **not a proof** that natural clusters do or do
+not exist. With 9 replicates its nominal resolution is 10%, and because the references
+are built from your data that rate is not an exact guarantee. Definitions, formulas and
+references are in [METHODS.md](docs/METHODS.md).
+
+## Algorithms
+
+| Objective | Families | Selected by |
+|:--|:--|:--|
+| `compact` (default) | k-means, MiniBatch k-means, bisecting k-means, BIRCH, spectral, Ward, medoids, CLARA, Gower k-prototypes | Structure test, gap statistic and stability, with silhouette in the reference geometry |
+| `probabilistic` | Gaussian mixture, Bayesian Gaussian mixture | BIC or held-out log-likelihood, then stability |
+| `density` | DBSCAN, OPTICS, HDBSCAN | DBCV, then stability |
+| `fuzzy` | Fuzzy c-means | Generalised Xie–Beni index, then stability |
+
+## Scope and limitations
+
+What Clustelia **does** guarantee: every decision is logged, results are reproducible
+from `random_state`, inputs are never modified or silently imputed, and an unfinished or
+unsupported analysis is reported as such.
+
+What it **does not** guarantee:
+
+- **That clusters matter for your problem.** Statistical structure is not practical
+  relevance; profiles still need interpretation.
+- **Calibrated error rates.** The structure test has a nominal resolution, not a
+  certified false-positive rate.
+- **Independent rows.** Subsampling assumes rows can be resampled independently; time
+  series, panels and grouped designs violate this.
+- **Scale.** Ward and dense medoids build pairwise matrices; at a few thousand rows they
+  hit the default 256 MiB guard (`SearchBudget(max_pairwise_mb=...)`). CLARA is an
+  opt-in approximation for medoids, not an out-of-core workflow.
+- **Wide nominal data.** On several categorical OpenML datasets (dermatology, mushroom,
+  lymph, credit-approval) the default policy abstains where a silhouette-based policy
+  finds weak partitions. Review the evidence before switching policies.
+- **Non-compact objectives** have no structure test (§6).
+- **Maturity.** `0.3.0a1` is an alpha; the API may still change.
+
+The validation, failures and abstentions included, covers synthetic benchmarks and 18
+public OpenML datasets with development and reserved splits: [VALIDATION.md](docs/VALIDATION.md).
 
 ## Documentation
 
 | Guide | Contents |
 |:--|:--|
-| [Convenience API](docs/CONVENIENCE_API.md) | `cluster()`, effort presets, identifiers, reports, and vectorized Gower |
-| [Methods](docs/METHODS.md) | Geometry, model families, selection metrics, and statistical decisions |
-| [Validation](docs/VALIDATION.md) | Benchmark design, empirical results, and limitations |
-| [Development changes](docs/DEV2_CHANGES.md) | Gower comparability, CLARA, and large-table behavior |
-| [Local verification](docs/LOCAL_VERIFICATION.md) | Reproduction and verification notes |
-| [Original specification](docs/SPECIFICATION_v0_1.md) | Initial design specification (Spanish) |
-| [Roadmap](docs/ROADMAP.md) | Planned evolution |
-| [Publishing](docs/PUBLISHING.md) | Release and packaging process |
-
-The [`examples/`](examples/) directory contains standalone demonstrations for numeric, mixed, ordinal/binary, probabilistic, density, fuzzy, and convenience APIs.
+| [Convenience API](docs/CONVENIENCE_API.md) | `cluster()`, presets, identifier detection, reports |
+| [Methods](docs/METHODS.md) | Geometry, algorithms, structure test, gap statistic, stability, formulas |
+| [Validation](docs/VALIDATION.md) | Benchmarks, results, limitations, reproducibility |
+| [Development changes](docs/DEV2_CHANGES.md) | Gower comparability, CLARA, large tables |
+| [Roadmap](docs/ROADMAP.md) | Planned work |
+| [`examples/`](examples/) | Runnable scripts: numeric, mixed, ordinal/binary, probabilistic, density, fuzzy |
 
 ## Development
 
 ```bash
-python -m pip install -e ".[dev,all]"
-python -m unittest discover -s tests -v
-ruff check src tests tools examples
-python tools/check_source.py src/clustelia
-mypy
-python -m build
-python -m twine check --strict dist/*
+git clone https://github.com/jaimevera1107/clustelia.git
+cd clustelia
+pip install -e ".[dev,all]"
+
+python -m pytest            # test suite
+ruff check src tests tools  # lint
+mypy                        # type checks
+python tools/verify_all.py  # every CI step, with a report
 ```
 
-The CI workflow exercises tests across supported operating systems and Python versions. Check its actual status before publishing; an informational type-check job is not equivalent to a passing type-check gate.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance and release checks, and [CHANGELOG.md](CHANGELOG.md) for version history. Bug reports and improvement proposals belong in [GitHub Issues](https://github.com/jaimevera1107/clustelia/issues).
+Contribution guidelines: [CONTRIBUTING.md](CONTRIBUTING.md). History:
+[CHANGELOG.md](CHANGELOG.md). Bugs and proposals:
+[GitHub Issues](https://github.com/jaimevera1107/clustelia/issues).
 
 ## License
 
-Distributed under the **BSD 3-Clause License**. See [LICENSE](LICENSE).
+[BSD 3-Clause](LICENSE).
 
-<sub>Clustelia logo created with ChatGPT (OpenAI).</sub>
+<sub>Logo created with ChatGPT (OpenAI).</sub>
