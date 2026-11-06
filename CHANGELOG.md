@@ -3,6 +3,19 @@
 All notable changes are documented here. The project follows
 [Semantic Versioning](https://semver.org/); 0.x releases may change the API.
 
+## Unreleased
+
+### Changed
+- `scripts/release.ps1` releases in one command: bump, CHANGELOG section,
+  reinstall, tests, lint, types, checklist, commit, push, wait for CI, and
+  create the GitHub Release. It stops at the first failure and resumes on
+  re-run; `-DryRun` checks everything without committing. Approving the
+  `pypi` environment stays manual, because a published version can never be
+  replaced.
+- New release tools: `tools/bump_version.py`, `tools/read_project_version.py`,
+  `tools/open_changelog_section.py` and `tools/check_release.py`, plus
+  `scripts/verify_pypi.ps1` to confirm an upload from a clean environment.
+
 ## 0.2.1 — 6 November 2026
 
 Documentation and tests only; no change to the engine or to any result.
