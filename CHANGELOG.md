@@ -3,14 +3,23 @@
 All notable changes are documented here. The project follows
 [Semantic Versioning](https://semver.org/); 0.x releases may change the API.
 
-## Unreleased — license change
+## 0.1.0 — first public release on PyPI
+
+First version published on PyPI (the earlier `0.0.0` upload was a name
+placeholder). Version numbering restarts here for the public release: the
+sections below 0.1.0 (`0.1.0a1` to `0.3.0a1`) are internal development
+snapshots that were never published, and everything in them is included
+in 0.1.0. Note that, by PEP 440 ordering, a development install reporting
+`0.3.0a1` sorts *above* 0.1.0; reinstall from PyPI to move to the release.
+
+### License
 
 - License changed from BSD-3-Clause to MIT (`LICENSE`, `pyproject.toml`,
   README badge and section, contributor and roadmap notes). Copyright
   holder unchanged. The historical entry below that set BSD-3-Clause is
   kept as history.
 
-## Unreleased — README rewrite
+### Documentation
 
 - README rewritten for first-time users: what the library does and why,
   scope table, installation from GitHub (the PyPI name holds a 0.0.0
@@ -20,8 +29,7 @@ All notable changes are documented here. The project follows
   explicit limitations section. Every Python snippet was executed against
   `main`.
 
-## Unreleased — null family and boundary policy (follow-ups of the
-## November 2026 validation study)
+### Selection policy (follow-ups of the November 2026 validation study)
 
 - `SelectionPolicy(null_family=...)`: choose the structureless reference
   explicitly. `"auto"` (default) keeps the geometry default
@@ -46,7 +54,7 @@ All notable changes are documented here. The project follows
 - Behavioural equivalence against `main` with default settings: 20/20
   identical (`tools/equivalence.py`, exact mode).
 
-## Unreleased — audit corrections (review before releasing)
+### Audit corrections
 
 - Align quick budget with the complete default numeric candidate grid.
 - Mark null-backend failures and unavailable Gap statistics as incomplete.

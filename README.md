@@ -16,8 +16,9 @@ Clustelia tries many clustering models on your data, checks whether the result i
 and stable, and **tells you when there is no clustering worth trusting**.
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-526477?style=flat-square)](LICENSE)
-![Status](https://img.shields.io/badge/status-0.3.0a1%20alpha-7B8794?style=flat-square)
+[![License](https://img.shields.io/badge/License-MIT-526477?style=flat-square)](https://github.com/jaimevera1107/clustelia/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/clustelia?style=flat-square&color=2A6EA6)](https://pypi.org/project/clustelia/)
+![Status](https://img.shields.io/badge/status-alpha-7B8794?style=flat-square)
 [![Tests](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml/badge.svg)](https://github.com/jaimevera1107/clustelia/actions/workflows/tests.yml)
 
 [What it is](#what-is-clustelia) · [Install](#installation) · [Quick start](#quick-start) · [Usage guide](#usage-guide) · [How it decides](#how-clustelia-decides) · [Scope and limits](#scope-and-limitations) · [Docs](#documentation)
@@ -68,17 +69,13 @@ your table ──► search many models ──► structure test ──► stabi
 
 Requires **Python 3.11+**.
 
-> [!WARNING]
-> The `clustelia` name on PyPI currently holds a placeholder (`0.0.0`), **not** this
-> library. Until a real release is published, install from GitHub.
-
 ```bash
-# Core library
-pip install "clustelia @ git+https://github.com/jaimevera1107/clustelia.git"
-
-# With every optional feature (plots, Excel export, DBCV, fuzzy c-means)
-pip install "clustelia[all] @ git+https://github.com/jaimevera1107/clustelia.git"
+pip install clustelia            # core library
+pip install "clustelia[all]"     # with every optional feature
 ```
+
+The development version installs straight from GitHub:
+`pip install "clustelia @ git+https://github.com/jaimevera1107/clustelia.git"`.
 
 | Extra | Adds | Needed for |
 |:--|:--|:--|
@@ -172,7 +169,7 @@ A plain k-means would have returned four clusters here without complaint.
 ### 2. Mixed data (numeric + categorical + ordinal + binary)
 
 Declare what each column means. Clustelia never guesses ordinal order or binary
-semantics; with mixed types it uses [Gower distance](docs/METHODS.md).
+semantics; with mixed types it uses [Gower distance](https://github.com/jaimevera1107/clustelia/blob/main/docs/METHODS.md).
 
 ```python
 import numpy as np
@@ -378,7 +375,7 @@ print(result.summary()["status"], result.summary()["selected_k"])   # recommende
 Why the copula option exists: in a 30-seed development study the default reference
 recommended clusters for 17–20 of 30 single skewed (lognormal) clouds, the copula for
 0–1 of 30, while both detected 29–30 of 30 real three-group mixtures. Full table and
-caveats in [VALIDATION.md](docs/VALIDATION.md).
+caveats in [VALIDATION.md](https://github.com/jaimevera1107/clustelia/blob/main/docs/VALIDATION.md).
 
 ### 8. Reports, plots and saving
 
@@ -442,7 +439,7 @@ the budget runs out the result is `incomplete`, never a quietly weaker recommend
 The structure test is a screening rule, **not a proof** that natural clusters do or do
 not exist. With 9 replicates its nominal resolution is 10%, and because the references
 are built from your data that rate is not an exact guarantee. Definitions, formulas and
-references are in [METHODS.md](docs/METHODS.md).
+references are in [METHODS.md](https://github.com/jaimevera1107/clustelia/blob/main/docs/METHODS.md).
 
 ## Algorithms
 
@@ -474,21 +471,22 @@ What it **does not** guarantee:
   lymph, credit-approval) the default policy abstains where a silhouette-based policy
   finds weak partitions. Review the evidence before switching policies.
 - **Non-compact objectives** have no structure test (§6).
-- **Maturity.** `0.3.0a1` is an alpha; the API may still change.
+- **Maturity.** `0.1.0` is the first public release of an alpha-stage library;
+  the API may still change before 1.0.
 
 The validation, failures and abstentions included, covers synthetic benchmarks and 18
-public OpenML datasets with development and reserved splits: [VALIDATION.md](docs/VALIDATION.md).
+public OpenML datasets with development and reserved splits: [VALIDATION.md](https://github.com/jaimevera1107/clustelia/blob/main/docs/VALIDATION.md).
 
 ## Documentation
 
 | Guide | Contents |
 |:--|:--|
-| [Convenience API](docs/CONVENIENCE_API.md) | `cluster()`, presets, identifier detection, reports |
-| [Methods](docs/METHODS.md) | Geometry, algorithms, structure test, gap statistic, stability, formulas |
-| [Validation](docs/VALIDATION.md) | Benchmarks, results, limitations, reproducibility |
-| [Development changes](docs/DEV2_CHANGES.md) | Gower comparability, CLARA, large tables |
-| [Roadmap](docs/ROADMAP.md) | Planned work |
-| [`examples/`](examples/) | Runnable scripts: numeric, mixed, ordinal/binary, probabilistic, density, fuzzy |
+| [Convenience API](https://github.com/jaimevera1107/clustelia/blob/main/docs/CONVENIENCE_API.md) | `cluster()`, presets, identifier detection, reports |
+| [Methods](https://github.com/jaimevera1107/clustelia/blob/main/docs/METHODS.md) | Geometry, algorithms, structure test, gap statistic, stability, formulas |
+| [Validation](https://github.com/jaimevera1107/clustelia/blob/main/docs/VALIDATION.md) | Benchmarks, results, limitations, reproducibility |
+| [Development changes](https://github.com/jaimevera1107/clustelia/blob/main/docs/DEV2_CHANGES.md) | Gower comparability, CLARA, large tables |
+| [Roadmap](https://github.com/jaimevera1107/clustelia/blob/main/docs/ROADMAP.md) | Planned work |
+| [`examples/`](https://github.com/jaimevera1107/clustelia/tree/main/examples) | Runnable scripts: numeric, mixed, ordinal/binary, probabilistic, density, fuzzy |
 
 ## Development
 
@@ -503,12 +501,12 @@ mypy                        # type checks
 python tools/verify_all.py  # every CI step, with a report
 ```
 
-Contribution guidelines: [CONTRIBUTING.md](CONTRIBUTING.md). History:
-[CHANGELOG.md](CHANGELOG.md). Bugs and proposals:
+Contribution guidelines: [CONTRIBUTING.md](https://github.com/jaimevera1107/clustelia/blob/main/CONTRIBUTING.md). History:
+[CHANGELOG.md](https://github.com/jaimevera1107/clustelia/blob/main/CHANGELOG.md). Bugs and proposals:
 [GitHub Issues](https://github.com/jaimevera1107/clustelia/issues).
 
 ## License
 
-[MIT](LICENSE).
+[MIT](https://github.com/jaimevera1107/clustelia/blob/main/LICENSE).
 
 <sub>Logo created with ChatGPT (OpenAI).</sub>

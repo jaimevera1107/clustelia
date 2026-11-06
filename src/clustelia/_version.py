@@ -4,4 +4,4 @@
 declared exactly once.
 """
 
-__version__: str = "0.3.0a1"
+__version__: str = "0.1.0"

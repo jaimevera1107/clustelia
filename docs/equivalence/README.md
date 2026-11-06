@@ -1,6 +1,7 @@
 # Frozen behavioral reference
 
-`reference_0.3.0a1.pkl` is the **current, versioned reference** used by
+`reference_0.3.0a1.pkl` is the **frozen behavioral reference** (named after the
+internal snapshot that produced it, independent of the package version) used by
 `python tools/verify_all.py` for behavioral comparisons (SHA-256: `8e3a5ef53fcb917d7dd50996d37febd7e89d5427d36fb911bf2e80c1152c8207`).
 The reference was provided with the original `0.3.0a1` project ZIP;
 this cleanup has **not** regenerated or altered it.
